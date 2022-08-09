@@ -18,6 +18,13 @@ const Home: NextPage = () => {
       <main className={styles.main}>
         <ConnectButton />
 
+        <h1 className="text-3xl font-bold underline">
+          Hello world!
+        </h1>
+
+        <button className="btn btn-primary">Button</button>
+
+
         <h1 className={styles.title}>
           Welcome to <a href="">RainbowKit</a> + <a href="">wagmi</a> +{' '}
           <a href="https://nextjs.org">Next.js!</a>
