@@ -66,7 +66,7 @@ function MyApp({ Component, pageProps }: AppProps) {
       
       <WagmiConfig client={wagmiClient}>
         <RainbowKitProvider chains={chains}>
-           <Navbar/>
+          <Navbar/>
           <Component {...pageProps} />
         </RainbowKitProvider>
       </WagmiConfig>
