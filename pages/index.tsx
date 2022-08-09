@@ -1,29 +1,12 @@
-// import { ConnectButton } from '@rainbow-me/rainbowkit';
-import { useContractRead, useContractWrite } from "wagmi";
 import type { NextPage } from 'next';
-import Bountyscape from '../utils/Bountyscape.json';
 import styles from '../styles/Home.module.css';
 
 const Home: NextPage = () => {
-
-  const { data: treasury } = useContractRead({
-    addressOrName: '0x74dFd143775F9e02A2f03a3a7755C2D4fCBc610b',
-    contractInterface: Bountyscape.abi,
-    functionName: 'treasury',
-  })
-
 
   return (
     <>
       <main className={styles.main}>
     
-
-        <h1 className="text-3xl font-bold underline">
-          Hello world!
-        </h1>
-
-        <button className="btn btn-primary">Button</button>
-
 
         <h1 className={styles.title}>
           Welcome to <a href="">RainbowKit</a> + <a href="">wagmi</a> +{' '}

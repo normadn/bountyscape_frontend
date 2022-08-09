@@ -17,7 +17,7 @@ export function GrantRoleContractor() {
   return (
 
 <div>
-      <button className="btn btn-primary" disabled={!write || isLoading} onClick={() => write?.()}>
+      <button className="btn btn-primary my-8" disabled={!write || isLoading} onClick={() => write?.()}>
         {isLoading ? 'Setting Status...' : 'Become Contractor'}
       </button>
       {isSuccess && (
@@ -29,8 +29,17 @@ export function GrantRoleContractor() {
         </div>
       )}
       {(isPrepareError || isError) && (
-        <div>Error: {(prepareError || error)?.message}</div>
-      )}
+        
+        <><div className="toast toast-end">
+            <div className="alert alert-error">
+              <div>
+                <span>{(prepareError || error)?.message}</span>
+              </div>
+            </div>
+          </div></>
+          
+            
+        )}
     </div>
   )
 }

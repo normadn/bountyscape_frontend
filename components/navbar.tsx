@@ -43,6 +43,11 @@ const Navbar = () => {
               </Link>
             </li>
             <li>
+              <Link href={"/bounties"}>
+                Bounties
+              </Link>
+            </li>
+            <li>
               <Link href={"/account"}>
                 Account
               </Link>

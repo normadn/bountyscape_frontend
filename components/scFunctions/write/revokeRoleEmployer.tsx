@@ -12,7 +12,7 @@ export function RevokeRoleEmployer() {
 
   return (
     <div>
-      <button className="btn btn-primary" onClick={() => write?.()}>Revoke Employer</button>
+      <button className="btn btn-primary my-8" onClick={() => write?.()}>Revoke Employer</button>
     </div>
   )
 }

@@ -12,7 +12,7 @@ export function RevokeRoleContractor() {
 
   return (
     <div>
-      <button className="btn btn-primary" onClick={() => write?.()}>Revoke Contractor</button>
+      <button className="btn btn-primary my-8" onClick={() => write?.()}>Revoke Contractor</button>
     </div>
   )
 }
