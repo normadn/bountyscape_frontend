@@ -54,7 +54,7 @@ const wagmiClient = createClient({
 
 function MyApp({ Component, pageProps }: AppProps) {
   return (
-    <div>
+    <div data-theme="light">
       <Head>
         <title>Bountyscape</title>
         <meta
