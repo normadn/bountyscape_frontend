@@ -1,4 +1,4 @@
-import { ConnectButton } from '@rainbow-me/rainbowkit';
+// import { ConnectButton } from '@rainbow-me/rainbowkit';
 import { useContractRead, useContractWrite } from "wagmi";
 import type { NextPage } from 'next';
 import Bountyscape from '../utils/Bountyscape.json';
@@ -11,12 +11,12 @@ const Home: NextPage = () => {
     contractInterface: Bountyscape.abi,
     functionName: 'treasury',
   })
-  console.log(treasury)
+
 
   return (
     <>
       <main className={styles.main}>
-        <ConnectButton />
+    
 
         <h1 className={styles.title}>
           Welcome to <a href="">RainbowKit</a> + <a href="">wagmi</a> +{' '}

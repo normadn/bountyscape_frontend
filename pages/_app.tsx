@@ -6,6 +6,7 @@ import { RainbowKitProvider, getDefaultWallets } from '@rainbow-me/rainbowkit';
 import { Chain, configureChains, createClient, WagmiConfig } from 'wagmi';
 import { alchemyProvider } from 'wagmi/providers/alchemy';
 import { publicProvider } from 'wagmi/providers/public';
+import Navbar from '../components/navbar';
 
 const evmosTestChain: Chain = {
   id: 9000,
@@ -62,8 +63,11 @@ function MyApp({ Component, pageProps }: AppProps) {
         />
         <link rel="icon" href="/favicon.ico" />
       </Head>
+      
       <WagmiConfig client={wagmiClient}>
+      
         <RainbowKitProvider chains={chains}>
+           <Navbar/>
           <Component {...pageProps} />
         </RainbowKitProvider>
       </WagmiConfig>
