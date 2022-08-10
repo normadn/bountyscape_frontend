@@ -3,10 +3,12 @@ import '@rainbow-me/rainbowkit/styles.css';
 import type { AppProps } from 'next/app';
 import Head from 'next/head';
 import { RainbowKitProvider, getDefaultWallets } from '@rainbow-me/rainbowkit';
-import { Chain, configureChains, createClient, WagmiConfig } from 'wagmi';
-import { alchemyProvider } from 'wagmi/providers/alchemy';
+import { Chain, configureChains, createClient, WagmiConfig, chain } from 'wagmi';
 import { publicProvider } from 'wagmi/providers/public';
 import Navbar from '../components/navbar';
+import Router from 'next/router';
+import NProgress from 'nprogress'; //nprogress module
+import '../styles/progressBar.css'; //styles of nprogress
 
 const evmosTestChain: Chain = {
   id: 9000,
@@ -28,14 +30,10 @@ const evmosTestChain: Chain = {
 
 const { chains, provider, webSocketProvider } = configureChains(
   [
-    evmosTestChain,    
+    evmosTestChain,
+    chain.goerli,
   ],
   [
-    alchemyProvider({
-      // This is Alchemy's default API key.
-      // You can get your own at https://dashboard.alchemyapi.io
-      apiKey: '_gg7wSSi0KMBsdKnGVfHDueq6xMB9EkC',
-    }),
     publicProvider(),
   ]
 );
@@ -51,6 +49,10 @@ const wagmiClient = createClient({
   provider,
   webSocketProvider,
 });
+
+//Binding events. 
+Router.events.on('routeChangeStart', () => NProgress.start()); Router.events.on('routeChangeComplete', () => NProgress.done()); Router.events.on('routeChangeError', () => NProgress.done());  
+
 
 function MyApp({ Component, pageProps }: AppProps) {
   return (
