@@ -56,7 +56,7 @@ Router.events.on('routeChangeStart', () => NProgress.start()); Router.events.on(
 
 function MyApp({ Component, pageProps }: AppProps) {
   return (
-    <div data-theme="light">
+    <div data-theme="bumblebee">
       <Head>
         <title>Bountyscape</title>
         <meta

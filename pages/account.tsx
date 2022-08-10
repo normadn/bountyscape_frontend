@@ -8,8 +8,8 @@ import { RevokeRoleContractor } from '../components/scFunctions/write/revokeRole
 const Account: NextPage = () => {
 
   return (
-    <>
-      <main className={styles.main}>
+      <main className="min-h-screen">
+         <div className="grid justify-items-center">
     
         <GrantRoleEmployer />
         <br/>
@@ -18,9 +18,8 @@ const Account: NextPage = () => {
         <GrantRoleContractor />
         <br/>
         <RevokeRoleContractor />
-
+        </div>
       </main>
-    </>
   );
 };
 

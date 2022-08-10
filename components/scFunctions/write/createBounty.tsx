@@ -26,7 +26,7 @@ export function CreateBounty({ipfsId, val}) {
   return (
     <div>
       <button className="btn btn-primary my-8 " disabled={!write || isLoading} onClick={() => write?.()}>
-        {isLoading ? 'Creating...' : 'New Bounty'}
+        {isLoading ? 'Creating...' : 'Mint Bounty NFT'}
       </button>
       {isSuccess && (
         <><div className="toast toast-end">

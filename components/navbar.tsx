@@ -1,7 +1,7 @@
 import Link from "next/link";
 import React, { useState } from "react";
 import { ConnectButton } from '@rainbow-me/rainbowkit';
-import styles from '../styles/Navbar.module.css';
+import Image from "next/image";
 
 
 // const MENU_LIST = [
@@ -33,7 +33,14 @@ const Navbar = () => {
               </li>
             </ul>
           </div>
-          <a href={"/"} className="btn btn-ghost normal-case text-xl">Bountyscape</a>
+          <a href={"/"} className="btn btn-ghost normal-case text-xl"><Image
+            src="https://i.ibb.co/dDnbRQQ/logosmall.png"
+            width="39.6px"
+            height="31.5px"
+            alt="logo"
+            quality="100"
+            lazyBoundary="400px"
+          /> <div> bountyscape</div></a>
         </div>
         <div className="navbar-center hidden lg:flex">
           <ul className="menu menu-horizontal p-0">
