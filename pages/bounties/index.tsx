@@ -1,31 +1,60 @@
-import { GetBounties } from "../../components/scFunctions/read/getBounties";
 import Link from "next/link";
-import { GrantRoleEmployer } from '../../components/scFunctions/write/grantRoleEmployer';
+import { useContractRead, useNetwork, useProvider } from 'wagmi'
+import Bountyscape from '../../utils/Bountyscape.json'
+import { useEffect, useState } from 'react';
+import { Result } from "ethers/lib/utils";
 
 
 
-const bountyList = ['QmaRwZiC1SmAqTWx2aB6PmdcXDUU11H9hUY1bncZ4GJJeb','QmZ6NSLSm2nybYwiQbPu5Rq8CwDatnhQ9DYvQGyvaEgKDb'] //GetBounties();
-
-export async function getStaticProps() {
-    // Call an external API endpoint to get posts
-    let ipfs = new Array<JSON>;
-    for (let i = 0; i < bountyList.length; i++) {
-        const bounty = await fetch('https://gateway.pinata.cloud/ipfs/' + bountyList[i])
+async function GetIPFS(bounties: string | Result | undefined) {
+  
+  let ipfs = new Array<JSON>;
+  if (bounties !== undefined) {
+      for (let i = 10; i < bounties.length; i++) { // 10 is the index of the first bounty for testing purposes
+        console.log(bounties[i]);
+        const bounty = await fetch('https://gateway.pinata.cloud/ipfs/' + bounties[i])
         ipfs.push(await bounty.json());
     }
-
-    return {
-      props: {
-        ipfs,
-      },
     }
-  }
-    
   
-function BountyOverview({ ipfs }) {
+  return ipfs;  
+
+  }
+  
+function BountyOverview() {
+
+ const [isLoaded, setIsLoaded] = useState(false);
+ const [data, setData] = useState<JSON[]>([]);
+
+ const { chain } = useNetwork()
+ const contractAddr = chain?.name === 'Goerli' ? '0xDFDc2E99A1De4ea9DAf44591fd4d8a1C555F8472' : '0xd821C935B8fAA376a4E7382b7EDbc0682A769310'
+
+  const { data:bounties, isSuccess } = useContractRead({
+    addressOrName: contractAddr,
+    contractInterface: Bountyscape.abi,
+    functionName: 'getBounties',
+  })
+
+  useEffect(() => {
+    while (!isSuccess) {
+      setIsLoaded(false);
+    } 
+    GetIPFS(bounties)
+      .then((res:JSON[]) => {
+        setData(res);
+        setIsLoaded(true);
+      })
+      .catch((e) => {
+        setIsLoaded(false);
+        console.log(e);
+      });
+  }, [bounties, isSuccess]);
+  
+
 
   return (
     <main className="min-h-screen">
+      
 
             <div className="grid justify-items-center">
 
@@ -33,9 +62,11 @@ function BountyOverview({ ipfs }) {
 
             <div className="text-2xl font-bold mt-8">Bounty Overview</div>
             <br/>
+            {!isLoaded && <p>loading bounties...</p>}
             
-            {ipfs.map((item:any, i:number ) => {
-    return (
+            {isLoaded && (
+              <div className="grid grid-cols-1 gap-4">
+                {data.map((item:any, i:number ) => (
       <div
         className="card card-compact w-96 bg-base-100 shadow-xl border-10px border-base-200 rounded-lg" 
         key={i}
@@ -51,18 +82,20 @@ function BountyOverview({ ipfs }) {
           <div className="card-actions justify-end">
             
             
-            <Link className="btn btn-primary my-8" href={"/bounties/"+bountyList[i]}>Details</Link>
+            <Link className="btn btn-primary my-8" href={"/bounties/"+bounties?.[i+10]}>Details</Link>
           </div>
         </div>
       </div>
-     
-    );
-  })}
+    )
+  )}
+              </div>
+     )}
 
       
        </div>
    </main>
   );
+
 }
 
 export default BountyOverview;

@@ -11,6 +11,12 @@ export function RevokeRoleContractor() {
     contractInterface: Bountyscape.abi,
     functionName: 'revokeRoleContractor',
   })
+
+  const { isError: isErrorContractor, } = usePrepareContractWrite({
+    addressOrName: contractAddr,
+    contractInterface: Bountyscape.abi,
+    functionName: 'grantRoleContractor',
+  })
   
   const { data, error, isError, write } = useContractWrite(config)
 
@@ -20,7 +26,7 @@ export function RevokeRoleContractor() {
 
   return (
     <div>
-      <button className="btn btn-primary my-8 " disabled={!write || isLoading} onClick={() => write?.()}>
+      <button className="btn btn-primary my-8 " disabled={!write || isLoading || isErrorContractor} onClick={() => write?.()}>
         {isLoading ? 'Revoking Status...' : 'Revoke Contractor Status'}
       </button>
       {isSuccess && (

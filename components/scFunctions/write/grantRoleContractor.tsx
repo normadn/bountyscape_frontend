@@ -10,6 +10,12 @@ export function GrantRoleContractor() {
     contractInterface: Bountyscape.abi,
     functionName: 'grantRoleContractor',
   })
+
+  const { isError: isErrorEmployer, } = usePrepareContractWrite({
+    addressOrName: contractAddr,
+    contractInterface: Bountyscape.abi,
+    functionName: 'grantRoleEmployer',
+  })
   
   const { data, error, isError, write } = useContractWrite(config)
 
@@ -19,7 +25,7 @@ export function GrantRoleContractor() {
 
   return (
     <div>
-      <button className="btn btn-primary my-8 " disabled={!write || isLoading} onClick={() => write?.()}>
+      <button className="btn btn-primary my-8 " disabled={!write || isLoading || isErrorEmployer} onClick={() => write?.()}>
         {isLoading ? 'Setting Status...' : 'Become Contractor'}
       </button>
       {isSuccess && (

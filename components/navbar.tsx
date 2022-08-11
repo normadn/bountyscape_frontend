@@ -2,16 +2,30 @@ import Link from "next/link";
 import React, { useState } from "react";
 import { ConnectButton } from '@rainbow-me/rainbowkit';
 import Image from "next/image";
-
-
-// const MENU_LIST = [
-//   { text: "Home", href: "/" },
-//   { text: "About Us", href: "/about" },
-//   { text: "Contact", href: "/contact" },
-// ];
+import { usePrepareContractWrite,useNetwork } from "wagmi";
+import Bountyscape from '../utils/Bountyscape.json'
 
 
 const Navbar = () => {
+
+  const { chain } = useNetwork()
+  const contractAddr = chain?.name === 'Goerli' ? '0xDFDc2E99A1De4ea9DAf44591fd4d8a1C555F8472' : '0xd821C935B8fAA376a4E7382b7EDbc0682A769310'
+
+
+  const { isError: isErrorEmployer, } = usePrepareContractWrite({
+    addressOrName: contractAddr,
+    contractInterface: Bountyscape.abi,
+    functionName: 'grantRoleEmployer',
+  })
+
+  const { isError: isErrorContractor, } = usePrepareContractWrite({
+    addressOrName: contractAddr,
+    contractInterface: Bountyscape.abi,
+    functionName: 'grantRoleContractor',
+  })
+
+
+
   return (
     <header>
       <div className="navbar bg-base-100">
@@ -43,29 +57,40 @@ const Navbar = () => {
           /> <div> bountyscape</div></a>
         </div>
         <div className="navbar-center hidden lg:flex">
+        <div className="flex-none hidden lg:block">
           <ul className="menu menu-horizontal p-0">
-            <li>
-              <Link href={"/onboarding"}>
-                Onboarding
-              </Link>
-            </li>
             <li>
               <Link href={"/bounties"}>
                 Bounties
               </Link>
             </li>
-            <li>
+            {/* <li>
               <Link href={"/account"}>
                 Account
               </Link>
+            </li> */}
+            <li>
+              <Link href={"/treasury"}>
+                Treasury
+              </Link>
             </li>
           </ul>
+          
+        </div>
         </div>
         <div className="navbar-end">
           <ConnectButton />
+          
         </div>
+        <Link href={!isErrorEmployer && !isErrorContractor ? "/onboarding" : "/account"}> 
+        <button className="btn btn-primary btn-sm ml-2">{isErrorEmployer && isErrorContractor ? "Error" : isErrorEmployer ? "Contractor" : isErrorContractor ? "Employer" : "Account"}</button>
+        </Link>
       </div>
+      
+
     </header>
+    
+    
   );
 };
 

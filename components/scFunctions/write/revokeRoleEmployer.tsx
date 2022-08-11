@@ -11,6 +11,12 @@ export function RevokeRoleEmployer() {
     contractInterface: Bountyscape.abi,
     functionName: 'revokeRoleEmployer',
   })
+
+  const { isError: isErrorEmployer, } = usePrepareContractWrite({
+    addressOrName: contractAddr,
+    contractInterface: Bountyscape.abi,
+    functionName: 'grantRoleEmployer',
+  })
   
 
   const { data, error, isError, write } = useContractWrite(config)
@@ -21,7 +27,7 @@ export function RevokeRoleEmployer() {
 
   return (
     <div>
-      <button className="btn btn-primary my-8 " disabled={!write || isLoading} onClick={() => write?.()}>
+      <button className="btn btn-primary my-8 " disabled={!write || isLoading || isErrorEmployer} onClick={() => write?.()}>
         {isLoading ? 'Revoking Status...' : 'Revoke Employer Status'}
       </button>
       {isSuccess && (
@@ -38,7 +44,7 @@ export function RevokeRoleEmployer() {
         </div>
       </div></>
       )}
-      {(isPrepareError || isError) && (
+      {(isPrepareError || isError ) && (
         
       <><div className="toast toast-end">
           <div className="alert alert-error">

@@ -1,14 +1,14 @@
 import { usePrepareContractWrite, useContractWrite, useNetwork, useWaitForTransaction } from 'wagmi'
 import Bountyscape from '../../../utils/Bountyscape.json'
 
-export function ClaimFunds({ ipfsId }) {
+export function ClaimBounty({ ipfsId }) {
   const { chain } = useNetwork()
   const contractAddr = chain?.name === 'Goerli' ? '0xDFDc2E99A1De4ea9DAf44591fd4d8a1C555F8472' : '0xd821C935B8fAA376a4E7382b7EDbc0682A769310'
 
   const { config, error: prepareError, isError: isPrepareError, } = usePrepareContractWrite({
     addressOrName: contractAddr,
     contractInterface: Bountyscape.abi,
-    functionName: 'claimFunds',
+    functionName: 'claimBounty',
     args: [ipfsId],
   })
   
@@ -22,7 +22,7 @@ export function ClaimFunds({ ipfsId }) {
   return (
     <div>
       <button className="btn btn-primary " disabled={!write || isLoading} onClick={() => write?.()}>
-        {isLoading ? 'Claiming...' : 'Claim Funds'}
+        {isLoading ? 'Claiming...' : 'Claim Bounty'}
       </button>
       {isSuccess && (
         <><div className="toast toast-end">

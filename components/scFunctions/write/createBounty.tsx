@@ -2,7 +2,10 @@ import { ethers } from 'ethers'
 import { usePrepareContractWrite, useContractWrite, useNetwork,useWaitForTransaction } from 'wagmi'
 import Bountyscape from '../../../utils/Bountyscape.json'
 
-export function CreateBounty({ipfsId, val}) {
+export function CreateBounty({ipfsContent, val}) {
+
+
+  const ipfsId = ipfsContent;//tbd
   const { chain } = useNetwork()
   const contractAddr = chain?.name === 'Goerli' ? '0xDFDc2E99A1De4ea9DAf44591fd4d8a1C555F8472' : '0xd821C935B8fAA376a4E7382b7EDbc0682A769310'
 
@@ -25,8 +28,8 @@ export function CreateBounty({ipfsId, val}) {
 
   return (
     <div>
-      <button className="btn btn-primary my-8 " disabled={!write || isLoading} onClick={() => write?.()}>
-        {isLoading ? 'Creating...' : 'Mint Bounty NFT'}
+      <button className="btn btn-primary " disabled={!write || isLoading} onClick={() => write?.()}>
+        {isLoading ? 'Creating...' : 'Confirm'}
       </button>
       {isSuccess && (
         <><div className="toast toast-end">
@@ -44,13 +47,13 @@ export function CreateBounty({ipfsId, val}) {
       )}
       {(isError) && (
         
-      <><div className="toast toast-end">
-          <div className="alert alert-error">
+      // <><div className="toast toast-end">
+      //     <div className="alert alert-error">
             <div>
               <span>{(prepareError || error)?.message}</span>
             </div>
-          </div>
-        </div></>
+        //   </div>
+        // </div></>
         
           
       )}
