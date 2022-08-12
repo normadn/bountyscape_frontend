@@ -3,6 +3,7 @@ import { useContractRead, useNetwork, useProvider } from 'wagmi'
 import Bountyscape from '../../utils/Bountyscape.json'
 import { useEffect, useState } from 'react';
 import { Result } from "ethers/lib/utils";
+import { GetReward } from "../../components/scFunctions/read/getReward";
 
 
 
@@ -11,7 +12,6 @@ async function GetIPFS(bounties: string | Result | undefined) {
   let ipfs = new Array<JSON>;
   if (bounties !== undefined) {
       for (let i = 10; i < bounties.length; i++) { // 10 is the index of the first bounty for testing purposes
-        console.log(bounties[i]);
         const bounty = await fetch('https://gateway.pinata.cloud/ipfs/' + bounties[i])
         ipfs.push(await bounty.json());
     }
@@ -29,14 +29,17 @@ function BountyOverview() {
  const { chain } = useNetwork()
  const contractAddr = chain?.name === 'Goerli' ? '0xDFDc2E99A1De4ea9DAf44591fd4d8a1C555F8472' : '0xd821C935B8fAA376a4E7382b7EDbc0682A769310'
 
+
+
   const { data:bounties, isSuccess } = useContractRead({
     addressOrName: contractAddr,
     contractInterface: Bountyscape.abi,
     functionName: 'getBounties',
   })
 
+
   useEffect(() => {
-    while (!isSuccess) {
+    while (!isSuccess ) {
       setIsLoaded(false);
     } 
     GetIPFS(bounties)
@@ -48,9 +51,8 @@ function BountyOverview() {
         setIsLoaded(false);
         console.log(e);
       });
-  }, [bounties, isSuccess]);
+  }, );
   
-
 
   return (
     <main className="min-h-screen">
@@ -62,7 +64,7 @@ function BountyOverview() {
 
             <div className="text-2xl font-bold mt-8">Bounty Overview</div>
             <br/>
-            {!isLoaded && <p>loading bounties...</p>}
+            {!isLoaded  && <p>loading bounties...</p>}
             
             {isLoaded && (
               <div className="grid grid-cols-1 gap-4">
@@ -79,6 +81,7 @@ function BountyOverview() {
           <h2 className="card-title">{item.name}</h2>
           <p>{item.description}</p>
           <div className="badge badge-outline">{item.attributes[0].value}</div>
+          <div className="badge badge-outline badge-success">Reward: <GetReward tokenId={i+10} /></div> 
           <div className="card-actions justify-end">
             
             

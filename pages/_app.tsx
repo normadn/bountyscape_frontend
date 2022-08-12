@@ -6,6 +6,7 @@ import { RainbowKitProvider, getDefaultWallets } from '@rainbow-me/rainbowkit';
 import { Chain, configureChains, createClient, WagmiConfig, chain } from 'wagmi';
 import { publicProvider } from 'wagmi/providers/public';
 import Navbar from '../components/navbar';
+import Footer from '../components/footer';
 import Router from 'next/router';
 import NProgress from 'nprogress'; //nprogress module
 import '../styles/progressBar.css'; //styles of nprogress
