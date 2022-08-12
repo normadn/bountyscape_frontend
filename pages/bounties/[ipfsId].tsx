@@ -81,7 +81,7 @@ function BountyDetail() {
       <p>Status: {status ? "Done" : "Open for Claimers"}</p>
 
       <ClaimBounty ipfsId={ipfsId}/>
-      <button className="btn btn-primary" disabled={!isErrorEmployer}>Submit work</button>
+      <button className="btn btn-primary" disabled={!isErrorEmployer} onClick={() => window.location = 'mailto:yourmail@domain.com'}>Submit work</button>
       <CompleteBounty ipfsId={ipfsId}/>
       <ClaimFunds ipfsId={ipfsId}/>
 

@@ -39,9 +39,9 @@ function BountyOverview() {
 
 
   useEffect(() => {
-    while (!isSuccess ) {
-      setIsLoaded(false);
-    } 
+    if (!isSuccess ) {
+       setIsLoaded(false);
+     } 
     GetIPFS(bounties)
       .then((res:JSON[]) => {
         setData(res);
@@ -51,51 +51,51 @@ function BountyOverview() {
         setIsLoaded(false);
         console.log(e);
       });
-  }, );
+  });
   
 
   return (
     <main className="min-h-screen">
       
+      <div className="grid justify-items-center">
 
-            <div className="grid justify-items-center">
+<Link href={"/bounties/create"}><button className="btn btn-primary my-8">New Bounty</button></Link>
 
-            <Link href={"/bounties/create"}><button className="btn btn-primary my-8">New Bounty</button></Link>
+<div className="text-2xl font-bold mt-8">Bounty Overview</div>
+<br/>
+{!isLoaded  && <p>loading bounties...</p>}
 
-            <div className="text-2xl font-bold mt-8">Bounty Overview</div>
-            <br/>
-            {!isLoaded  && <p>loading bounties...</p>}
+{isLoaded && (
+  <div className="grid grid-cols-1 gap-4">
+    {data.map((item:any, i:number ) => (
+<div
+className="card card-compact w-96 bg-base-100 shadow-xl border-10px border-base-200 rounded-lg" 
+key={i}
+>
+<figure>
+{/* eslint-disable-next-line @next/next/no-img-element */}
+<img src={item.image} alt={item.name} />
+</figure>
+<div className="card-body">
+<h2 className="card-title">{item.name}</h2>
+<p>{item.description}</p>
+<div className="badge badge-outline">{item.attributes[0].value}</div>
+<div className="badge badge-outline badge-success">Reward: <GetReward tokenId={i+10} /></div> 
+<div className="card-actions justify-end">
+
+
+<Link className="btn btn-primary my-8" href={"/bounties/"+bounties?.[i+10]}>Details</Link>
+</div>
+</div>
+</div>
+)
+)}
+  </div>
+)}
+
+
+</div>
             
-            {isLoaded && (
-              <div className="grid grid-cols-1 gap-4">
-                {data.map((item:any, i:number ) => (
-      <div
-        className="card card-compact w-96 bg-base-100 shadow-xl border-10px border-base-200 rounded-lg" 
-        key={i}
-      >
-        <figure>
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src={item.image} alt={item.name} />
-        </figure>
-        <div className="card-body">
-          <h2 className="card-title">{item.name}</h2>
-          <p>{item.description}</p>
-          <div className="badge badge-outline">{item.attributes[0].value}</div>
-          <div className="badge badge-outline badge-success">Reward: <GetReward tokenId={i+10} /></div> 
-          <div className="card-actions justify-end">
-            
-            
-            <Link className="btn btn-primary my-8" href={"/bounties/"+bounties?.[i+10]}>Details</Link>
-          </div>
-        </div>
-      </div>
-    )
-  )}
-              </div>
-     )}
-
-      
-       </div>
    </main>
   );
 
