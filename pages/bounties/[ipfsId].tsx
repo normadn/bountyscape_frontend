@@ -72,7 +72,7 @@ function BountyDetail() {
       {isLoaded && (data) && (
 
         <div className="grid justify-items-center grid-cols-1 gap-4">
-        <Image src={data.image} width="200%" height="100%" quality="100"/>   
+        <Image src={data.image} width="200%" height="100%" quality="100" alt="NFT"/>   
       <p>Title: {data.name}</p>
       <p>Description: {data.description}</p>
       <p>Type: {data.attributes[0].value}</p>
@@ -81,7 +81,7 @@ function BountyDetail() {
       <p>Status: {status ? "Done" : "Open for Claimers"}</p>
 
       <ClaimBounty ipfsId={ipfsId}/>
-      <button className="btn btn-primary" disabled={!isErrorEmployer} onClick={() => window.location = 'mailto:yourmail@domain.com'}>Submit work</button>
+      <button className="btn btn-primary" disabled={!isErrorEmployer} onClick={() => (window as any).location = 'mailto:yourmail@domain.com'}>Submit work</button>
       <CompleteBounty ipfsId={ipfsId}/>
       <ClaimFunds ipfsId={ipfsId}/>
 
@@ -89,7 +89,7 @@ function BountyDetail() {
 
       <div className="text-2xl font-bold mt-8">Claims History</div>
       {claimers?.map((claimer) => ( 
-        <div className="grid justify-items-center grid-cols-1 gap-4">
+        <div className="grid justify-items-center grid-cols-1 gap-4" key={claimer}>
           <p>Claimer: {claimer}</p>
           <ApproveCompletedBounty ipfsId={ipfsId} claimer={claimer}/>
         </div>
