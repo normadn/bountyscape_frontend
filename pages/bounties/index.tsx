@@ -11,7 +11,7 @@ async function GetIPFS(bounties: string | Result | undefined) {
   
   let ipfs = new Array<JSON>;
   if (bounties !== undefined) {
-      for (let i = 10; i < bounties.length; i++) { // 10 is the index of the first bounty for testing purposes
+      for (let i = 0; i < bounties.length; i++) { // 10 is the index of the first bounty for testing purposes
         const bounty = await fetch('https://gateway.pinata.cloud/ipfs/' + bounties[i])
         ipfs.push(await bounty.json());
     }
@@ -27,7 +27,7 @@ function BountyOverview() {
  const [data, setData] = useState<JSON[]>([]);
 
  const { chain } = useNetwork()
- const contractAddr = chain?.name === 'Goerli' ? '0xDFDc2E99A1De4ea9DAf44591fd4d8a1C555F8472' : '0xd821C935B8fAA376a4E7382b7EDbc0682A769310'
+ const contractAddr = chain?.name === 'Goerli' ? '0xDFDc2E99A1De4ea9DAf44591fd4d8a1C555F8472' : '0x0140CeC539ee2cf6bECA0597E1eFD2b723A0EBF7'
 
 
 
@@ -45,13 +45,14 @@ function BountyOverview() {
     GetIPFS(bounties)
       .then((res:JSON[]) => {
         setData(res);
+        console.log(res)
         setIsLoaded(true);
       })
       .catch((e) => {
         setIsLoaded(false);
         console.log(e);
       });
-  });
+  }, [isSuccess, bounties]);
   
 
   return (
@@ -80,11 +81,11 @@ key={i}
 <h2 className="card-title">{item.name}</h2>
 <p>{item.description}</p>
 <div className="badge badge-outline">{item.attributes[0].value}</div>
-<div className="badge badge-outline badge-success">Reward: <GetReward tokenId={i+10} /></div> 
+<div className="badge badge-outline badge-success">Reward: <GetReward tokenId={i} /></div> 
 <div className="card-actions justify-end">
 
 
-<Link className="btn btn-primary my-8" href={"/bounties/"+bounties?.[i+10]}>Details</Link>
+<Link className="btn btn-primary my-8" href={"/bounties/"+bounties?.[i]}>Details</Link>
 </div>
 </div>
 </div>
