@@ -2,7 +2,7 @@ import '../styles/globals.css';
 import '@rainbow-me/rainbowkit/styles.css';
 import type { AppProps } from 'next/app';
 import Head from 'next/head';
-import { RainbowKitProvider, getDefaultWallets } from '@rainbow-me/rainbowkit';
+import { RainbowKitProvider, getDefaultWallets, lightTheme } from '@rainbow-me/rainbowkit';
 import { Chain, configureChains, createClient, WagmiConfig, chain } from 'wagmi';
 import { publicProvider } from 'wagmi/providers/public';
 import Navbar from '../components/navbar';
@@ -15,6 +15,7 @@ const evmosTestChain: Chain = {
   id: 9000,
   name: 'Evmos Testnet',
   network: 'evmos testnet ',
+  iconUrl: 'https://assets.coingecko.com/coins/images/24023/large/evmos.png',
   nativeCurrency: {
     decimals: 18,
     name: 'TEVMOS',
@@ -29,8 +30,28 @@ const evmosTestChain: Chain = {
   testnet: true,
 }
 
+const evmosChain: Chain = {
+  id: 9001,
+  name: 'Evmos',
+  network: 'evmos mainnet ',
+  iconUrl: 'https://assets.coingecko.com/coins/images/24023/large/evmos.png',
+  nativeCurrency: {
+    decimals: 18,
+    name: 'EVMOS',
+    symbol: 'EVMOS',
+  },
+  rpcUrls: {
+    default: 'https://eth.bd.evmos.org:8545	',
+  },
+  blockExplorers: {
+    default: { name: 'Evmos', url: 'https://evm.evmos.org' },
+  },
+  testnet: false,
+}
+
 const { chains, provider, webSocketProvider } = configureChains(
   [
+    evmosChain,
     evmosTestChain,
     chain.goerli,
   ],
@@ -68,7 +89,11 @@ function MyApp({ Component, pageProps }: AppProps) {
       </Head>
       
       <WagmiConfig client={wagmiClient}>
-        <RainbowKitProvider chains={chains}>
+        <RainbowKitProvider chains={chains} theme={lightTheme({
+      accentColor: '#E0A82E',
+      accentColorForeground: 'white',
+      fontStack: 'system',
+    })}>
           <Navbar/>
           <Component {...pageProps} />
         </RainbowKitProvider>

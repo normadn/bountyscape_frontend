@@ -53,6 +53,9 @@ function BountyDetail() {
 
 
 
+
+
+
   console.log(bounty);
 
   return (

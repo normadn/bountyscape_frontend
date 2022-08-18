@@ -1,23 +1,36 @@
 import Link from "next/link";
-import { useContractRead, useNetwork, useProvider } from 'wagmi'
+import { useContractRead, useNetwork, usePrepareContractWrite, useProvider } from 'wagmi'
 import Bountyscape from '../../utils/Bountyscape.json'
 import { useEffect, useState } from 'react';
 import { Result } from "ethers/lib/utils";
 import { GetReward } from "../../components/scFunctions/read/getReward";
+import { DeleteBounty } from "../../components/scFunctions/write/deleteBounty";
 
 
 
 async function GetIPFS(bounties: string | Result | undefined) {
+
+  let bountyArray = [];
+  let tokenIdArray = [];
+
   
   let ipfs = new Array<JSON>;
-  if (bounties !== undefined) {
-      for (let i = 0; i < bounties.length; i++) { // 10 is the index of the first bounty for testing purposes
+
+  if (bounties !== undefined && bounties !== [] && bounties !== null) {
+      for (let i = 0; i < bounties.length; i++) { 
+        if ( bounties[i] !== '' && bounties[i] !== null && bounties[i] !== undefined) {
         const bounty = await fetch('https://gateway.pinata.cloud/ipfs/' + bounties[i])
         ipfs.push(await bounty.json());
+        bountyArray.push(bounties[i]);
+        tokenIdArray.push(i);
+        } 
     }
+    } else 
+    {
+      console.log("No bounty found");
     }
   
-  return ipfs;  
+  return [ipfs, bountyArray, tokenIdArray];  
 
   }
   
@@ -25,34 +38,44 @@ function BountyOverview() {
 
  const [isLoaded, setIsLoaded] = useState(false);
  const [data, setData] = useState<JSON[]>([]);
+ const [bounty, setBounty] = useState<JSON[]>([]);
+ const [tokenId, setTokenId] = useState<any>([]);
+
+
 
  const { chain } = useNetwork()
- const contractAddr = chain?.name === 'Goerli' ? '0xDFDc2E99A1De4ea9DAf44591fd4d8a1C555F8472' : '0x5A7973aF52BE3A8590b6252F069A1e8502B0a975'
+ const contractAddr = chain?.name === 'Goerli' ? '0xB4902E7c5F1645B955E565Cd9d49b04B8770A1Bd' : '0x7bE0571a42bF0e4429d1fbcECA791575CFb73b4E'
 
 
 
-  const { data:bounties, isSuccess } = useContractRead({
+  const { data:bounties, isSuccess, isLoading } = useContractRead({
     addressOrName: contractAddr,
     contractInterface: Bountyscape.abi,
     functionName: 'getBounties',
   })
 
+  const { isError: isErrorContractor, } = usePrepareContractWrite({
+    addressOrName: contractAddr,
+    contractInterface: Bountyscape.abi,
+    functionName: 'grantRoleContractor',
+  })
 
   useEffect(() => {
-    if (!isSuccess ) {
+    if (!isSuccess && isLoading ) {
        setIsLoaded(false);
-     } 
+     } else {
     GetIPFS(bounties)
-      .then((res:JSON[]) => {
-        setData(res);
-        console.log(res)
+      .then(([ipfs, bountyArray, tokenIdArray]) => {
+        setData(ipfs);
         setIsLoaded(true);
+        setBounty(bountyArray)
+        setTokenId(tokenIdArray);
       })
       .catch((e) => {
         setIsLoaded(false);
         console.log(e);
-      });
-  }, [isSuccess, bounties]);
+      })};
+  }, [bounties, isLoading, isSuccess]);
   
 
   return (
@@ -81,13 +104,15 @@ key={i}
 <h2 className="card-title">{item.name}</h2>
 <p>{item.description}</p>
 <div className="badge badge-outline">{item.attributes[0].value}</div>
-<div className="badge badge-outline badge-success">Reward: <GetReward tokenId={i} /></div> 
+<div className="badge badge-outline badge-success">Reward: <GetReward tokenId={tokenId[i]} /></div> 
+
+
 <div className="card-actions justify-end">
-
-
-<Link className="btn btn-primary my-8" href={"/bounties/"+bounties?.[i]}>Details</Link>
+<button className="btn btn-outline btn-primary btn-sm"><Link  href={"/bounties/"+bounty?.[i]}>Details</Link></button>
 </div>
 </div>
+<div hidden={!isErrorContractor}><div className="card-actions justify-start"> <DeleteBounty ipfsId={bounty?.[i]}></DeleteBounty></div></div>
+
 </div>
 )
 )}

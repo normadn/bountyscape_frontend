@@ -31,7 +31,7 @@ async function GetIPFS(ipfsId: string | Result | undefined) {
 function BountyDetail() {
 
   const { chain } = useNetwork()
-  const contractAddr = chain?.name === 'Goerli' ? '0xDFDc2E99A1De4ea9DAf44591fd4d8a1C555F8472' : '0x5A7973aF52BE3A8590b6252F069A1e8502B0a975'
+  const contractAddr = chain?.name === 'Goerli' ? '0xB4902E7c5F1645B955E565Cd9d49b04B8770A1Bd' : '0x7bE0571a42bF0e4429d1fbcECA791575CFb73b4E'
 
 
   const { isError: isErrorEmployer, } = usePrepareContractWrite({
@@ -39,6 +39,8 @@ function BountyDetail() {
     contractInterface: Bountyscape.abi,
     functionName: 'grantRoleEmployer',
   })
+
+  
 
   const [isLoaded, setIsLoaded] = useState(false);
   const [data, setData] = useState<ipfsData>();
@@ -58,7 +60,14 @@ function BountyDetail() {
         setIsLoaded(false);
         console.log(e);
       });
-  });
+  } , [ipfsId, claimers]);
+
+  const { isError: isPrepareError, } = usePrepareContractWrite({
+    addressOrName: contractAddr,
+    contractInterface: Bountyscape.abi,
+    functionName: 'claimBounty',
+    args: [ipfsId],
+  })
 
   
   return (
@@ -81,7 +90,7 @@ function BountyDetail() {
       <p>Status: {status ? "Done" : "Open for Claimers"}</p>
 
       <ClaimBounty ipfsId={ipfsId}/>
-      <button className="btn btn-primary" disabled={!isErrorEmployer} onClick={() => (window as any).location = 'mailto:yourmail@domain.com'}>Submit work</button>
+      <button className="btn btn-primary" disabled={!isErrorEmployer ||  !isPrepareError} onClick={() => (window as any).location = 'mailto:yourmail@domain.com'}>Submit work</button>
       <CompleteBounty ipfsId={ipfsId}/>
       <ClaimFunds ipfsId={ipfsId}/>
 

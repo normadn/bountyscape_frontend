@@ -11,13 +11,13 @@ import SWNFT from '../utils/SWNFTUpgradeTestnet.json'
 const Treasury: NextPage = () => {
 
 
-  const [stake, setStake] = useState(ethers.utils.parseEther("1"));
+  const [stake, setStake] = useState(ethers.utils.parseEther("0"));
 
   const { chain } = useNetwork();
   const treasuryAddr =
     chain?.name === "Goerli"
-      ? "0x2910EeD4202FEe772DF6a9e47a2a1b31b834337d"
-      : "0x548325D23dD7FdcD3aC34daCfb51Ad10CeFd13fd";
+      ? "0x01d476B3198301bC90682FCc4899833E96d018B0"
+      : "0x4F26fdA347e6fA2FF2A32E5b2f114DA00cB376E3";
   const { address } = useAccount();
   const { data, isError, isLoading } = useBalance({
     addressOrName: address,
@@ -80,11 +80,11 @@ const Treasury: NextPage = () => {
               <div className="stat-title">Treasury balance</div>
               <div hidden={!isLoadingT} className="stat-value">
                 {" "}
-                Fetching balance…{" "}
+                …{" "}
               </div>
               <div hidden={!isErrorT} className="stat-value">
                 {" "}
-                Error fetching balance{" "}
+                Error{" "}
               </div>
               <div hidden={isLoadingT || isErrorT} className="stat-value">
                 {" "}
@@ -100,7 +100,7 @@ const Treasury: NextPage = () => {
           </div>
           <br />
           <div className="text-2xl font-bold mt-8">
-            stake your {data?.symbol} powerd by blockscape & swell
+            stake your {data?.symbol} powered by blockscape & swell
           </div>
           <br />
           <div className="card w-96 bg-base-100 shadow-xl">
@@ -131,13 +131,13 @@ const Treasury: NextPage = () => {
           </div>
         </div>
 
-        <><div className="toast toast-end">
+        {/* <><div className="toast toast-end">
           <div className="alert alert-error">
             <div>
               <span>{(prepareError || error)?.message}</span>
             </div>
           </div>
-        </div></>
+        </div></> */}
       </main>
     </>
   );

@@ -6,22 +6,67 @@ import { RevokeRoleEmployer } from "../components/scFunctions/write/revokeRoleEm
 import { GrantRoleContractor } from "../components/scFunctions/write/grantRoleContractor";
 import { RevokeRoleContractor } from "../components/scFunctions/write/revokeRoleContractor";
 import Quadrata from "../utils/Quadrata.json";
+import Bountyscape from '../utils/Bountyscape.json'
 
 
 import QUADRATA_READER_ABI from "../components/quadrata/kyc";
 import DemoApp from "../components/quadrata/all";
-import { useAccount, useContractRead, usePrepareContractWrite } from "wagmi";
+import { useAccount, useContractRead, usePrepareContractWrite, useNetwork, useBalance } from "wagmi";
 import { ethers } from "ethers";
 import { useEffect, useState } from "react";
+import Link from "next/link";
+import { Result } from "ethers/lib/utils";
+import { ClaimFunds } from "../components/scFunctions/write/claimFunds";
+
+
+
+
+async function GetIPFS(bounties: string | Result | undefined) {
+
+
+
+  let ipfs = new Array<JSON>;
+
+  if (bounties !== undefined && bounties !== [] && bounties !== null && bounties.length !== undefined) {
+      for (let i = 0; i < bounties.length; i++) { 
+        if ( bounties[i] !== '' && bounties[i] !== null && bounties[i] !== undefined) {
+        const bounty = await fetch('https://gateway.pinata.cloud/ipfs/' + bounties[i])
+        ipfs.push(await bounty.json());
+
+        } 
+    }
+    } else 
+    {
+      console.log("No bounty found");
+    }
+  
+  return ipfs ;  
+
+  }
 
 const Account: NextPage = () => {
 
 
   const { address, isConnecting, isDisconnected } = useAccount()
 
+  const { data:balanceUser, isErrorB, isLoadingB } = useBalance({
+    addressOrName: address,
+  })
+
+  const { chain } = useNetwork();
+  const contractAddr =
+    chain?.name === "Goerli"
+      ? "0xB4902E7c5F1645B955E565Cd9d49b04B8770A1Bd"
+      : "0x7bE0571a42bF0e4429d1fbcECA791575CFb73b4E";
+
 
   const [status, setStatus] = useState("Not Verified KYC/KYB - Become Verified:");
   const [disabled, setDisabled] = useState(true);
+  const [isLoaded, setIsLoaded] = useState(false);
+  const [data, setData] = useState<JSON[]>([]);
+  const [bounty, setBounty] = useState<JSON[]>([]);
+  const [tokenId, setTokenId] = useState<any>([]);
+  const [reward , setReward] = useState<any>([]);
 
 
   const { data:isBusiness, isLoading:isLoadingTokenId, isSuccess:isSuccessTokenId, error } = useContractRead({
@@ -30,6 +75,63 @@ const Account: NextPage = () => {
     functionName: 'getAttributesFree',
     args: [address, 1, ethers.utils.id('IS_BUSINESS')],
   })
+
+
+  const { isError: isErrorEmployer } = usePrepareContractWrite({
+    addressOrName: contractAddr,
+    contractInterface: Bountyscape.abi,
+    functionName: "grantRoleEmployer",
+  });
+
+  const { isError: isErrorContractor } = usePrepareContractWrite({
+    addressOrName: contractAddr,
+    contractInterface: Bountyscape.abi,
+    functionName: "grantRoleContractor",
+  });
+
+
+
+  useEffect (() => {
+    try {
+    const provider = new ethers.providers.Web3Provider(window.ethereum as any);
+    const signer = provider.getSigner();
+    const bountyscape = new ethers.Contract("0xB4902E7c5F1645B955E565Cd9d49b04B8770A1Bd", Bountyscape.abi, provider);
+    const ipfsArray:any = [];
+    const rewardArray:any = [];
+    for (let i = 0; i < 1000; i++) {
+      bountyscape.balanceOf(signer.getAddress(), i).then((balance: { toString: () => string; }) => {
+        if (balance?.toString() !== "0") {
+          bountyscape.tokenIDtoIPFS(i).then((ipfs: any) => {
+            ipfsArray.push(ipfs);
+            })
+          bountyscape.tokenIDtoReward(i).then((reward: any) => {
+            rewardArray.push(ethers.utils.formatEther(reward.toString()));
+            })
+          }
+      })}
+      setBounty(ipfsArray);
+      setReward(rewardArray);
+      (window.ethereum as any).on('accountsChanged', () => {((window as any).location.reload())})
+
+    } catch (error) {
+      console.log(error);
+    }
+  }, []);
+
+
+
+  useEffect (() => {
+    if (bounty === undefined && data === undefined) {
+      
+    } else {
+    GetIPFS(bounty)
+    .then((res) => {
+    setData(res);
+    setIsLoaded(true)})
+    .catch((e) => {
+      setIsLoaded(false);
+      console.log(e);
+    })}}, [bounty, data, isLoaded]);
 
   useEffect (() => {
   if (isSuccessTokenId) {
@@ -51,52 +153,32 @@ const Account: NextPage = () => {
   return (
     <main className="min-h-screen">
       <div className="grid justify-items-center">
-        <div className="text-2xl font-bold mt-8">Account Overview</div>
+        <div className="text-2xl font-bold mt-8">{isErrorContractor && !isErrorEmployer ? "Empolyer" : "Contractor"} Account Overview</div>
         <br />
         <div className="stats shadow">
-          <div className="stat">
+          {/* <div className="stat">
             <div className="stat-figure text-primary">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                className="inline-block w-8 h-8 stroke-current"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
-                ></path>
-              </svg>
             </div>
-            <div className="stat-title">Total Likes</div>
-            <div className="stat-value text-primary">25.6K</div>
-            <div className="stat-desc">21% more than last month</div>
-          </div>
+            <div className="stat-title">Account Balance</div>
+            <div hidden={!isLoadingB} className="stat-value">
+                {" "}
+                Fetching balance…{" "}
+              </div>
+              <div hidden={!isErrorB} className="stat-value">
+                {" "}
+                Error fetching balance{" "}
+              </div>
+              <div hidden={isLoadingB || isErrorB} className="stat-value">
+                {" "}
+                {Number(balanceUser?.formatted).toFixed(2)}{" "}
+                {balanceUser?.symbol}{" "}
+              </div>
+            
+          </div> */}
 
-          <div className="stat">
-            <div className="stat-figure text-secondary">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                className="inline-block w-8 h-8 stroke-current"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  d="M13 10V3L4 14h7v7l9-11h-7z"
-                ></path>
-              </svg>
-            </div>
-            <div className="stat-title">Page Views</div>
-            <div className="stat-value text-secondary">2.6M</div>
-            <div className="stat-desc">21% more than last month</div>
-          </div>
+    
 
-          <div className="stat">
+          {/* <div className="stat">
             <div className="stat-figure text-secondary">
               <div className="avatar online">
                 <div className="w-16 rounded-full">
@@ -110,14 +192,56 @@ const Account: NextPage = () => {
             <div className="stat-value">86%</div>
             <div className="stat-title">Tasks done</div>
             <div className="stat-desc text-secondary">31 tasks remaining</div>
-          </div>
+          </div> */}
         </div>
 
-        <GrantRoleEmployer />
+        {/* <GrantRoleEmployer /> */}
         {/* <RevokeRoleEmployer /> */}
-        <GrantRoleContractor />
+        {/* <GrantRoleContractor /> */}
         <br />
         {/* <RevokeRoleContractor /> */}
+
+
+
+        
+
+
+
+        {(!isLoaded && isErrorContractor) && <p>loading bounties...</p>}
+
+{(isLoaded && !isErrorContractor) && (
+  <><div className="text-xl font-bold mt-8">Your claimed bountyscape NFTs:</div><div className="grid grid-cols-1 gap-4">
+            {data.map((item: any, i: number) => (
+              <div
+                className="card card-compact w-96 bg-base-100 shadow-xl border-10px border-base-200 rounded-lg"
+                key={i}
+              >
+                <figure>
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img src={item.image} alt={item.name} />
+                </figure>
+                <div className="card-body">
+                  <h2 className="card-title">{item.name}</h2>
+                  <p>{item.description}</p>
+                  <div className="badge badge-outline">{item.attributes[0].value}</div>
+                  <div className="badge badge-outline badge-success">Reward: {reward[i]}</div>
+                  <div className="card-actions justify-end">
+
+
+                    <ClaimFunds ipfsId={bounty[i]} />
+                  </div>
+                </div>
+              </div>
+            )
+            )}
+          </div></>
+)}
+
+
+
+
+
+        <br />
 
         <div className="text-xl font-bold mt-8">{status}</div>
         <br />
