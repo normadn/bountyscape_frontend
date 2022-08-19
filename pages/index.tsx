@@ -32,6 +32,7 @@ const Home: NextPage = () => {
     <>
       <main className="min-h-screen">
       <br/>
+      <div className="grid justify-items-center">
   <div className="hero-content text-center">
     <div className="max-w-md">
     <Image
@@ -51,7 +52,7 @@ const Home: NextPage = () => {
             }><button className="btn btn-primary">Get Started</button></Link>
     </div>
   </div>
-
+  </div>
       </main>
     </>
   );

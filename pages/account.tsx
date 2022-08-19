@@ -153,7 +153,7 @@ const Account: NextPage = () => {
   return (
     <main className="min-h-screen">
       <div className="grid justify-items-center">
-        <div className="text-2xl font-bold mt-8">{isErrorContractor && !isErrorEmployer ? "Empolyer" : "Contractor"} Account Overview</div>
+        <div className="text-2xl font-bold mt-8">{isErrorContractor && !isErrorEmployer ? "Employer" : "Contractor"} Account Overview</div>
         <br />
         <div className="stats shadow">
           {/* <div className="stat">
