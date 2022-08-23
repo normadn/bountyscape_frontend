@@ -83,7 +83,7 @@ function BountyOverview() {
       
       <div className="grid justify-items-center">
 
-<Link href={"/bounties/create"}><button className="btn btn-primary my-8">New Bounty</button></Link>
+<Link href={"/bounties/create"}><button className="btn btn-primary my-8" disabled={!isErrorContractor}>New Bounty</button></Link>
 
 <div className="text-2xl font-bold mt-8">Bounty Overview</div>
 <br/>
@@ -104,6 +104,7 @@ key={i}
 <h2 className="card-title">{item.name}</h2>
 <p>{item.description}</p>
 <div className="badge badge-outline">{item.attributes[0].value}</div>
+<div className="badge badge-outline badge-primary">License: {item?.attributes[1]?.value === undefined ? "none" : item.attributes[1].value}</div>
 <div className="badge badge-outline badge-success">Reward: <GetReward tokenId={tokenId[i]} /></div> 
 
 

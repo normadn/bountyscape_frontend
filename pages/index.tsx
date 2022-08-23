@@ -44,7 +44,7 @@ const Home: NextPage = () => {
           />
           <br/>
       <h1 className="text-3xl font-bold">Welcome to bountyscape</h1>
-      <p className="py-6">bountyscape is a decentralized marketplace for freelance services, bug bounties, and jobs! <br/><br/>Your vision is to create access to fair and structured work for everyone around the world, while transforming the flawed employer-contractor model with the help of the web3</p>
+      <p className="py-6">bountyscape is a decentralized marketplace for freelance services, bug bounties, and jobs! <br/><br/>Our vision is to create access to fair and structured work for everyone around the world, while transforming the flawed employer-contractor model with the help of the web3</p>
       <Link href={
               !isErrorEmployer && !isErrorContractor
                 ? "/onboarding"

@@ -53,7 +53,7 @@ const Navbar = () => {
                 <Link href={"/bounties"}>Bounties</Link>
               </li>
               <li>
-                <Link href={"/treasury"}>Treasury</Link>
+                <Link href={"/treasury"}>Staking/Treasury</Link>
               </li>
               <li>
                 <Link href={
@@ -82,7 +82,7 @@ const Navbar = () => {
               <Link href={"/bounties"}>Bounties</Link>
             </li>
             <li>
-              <Link href={"/treasury"}>Treasury</Link>
+              <Link href={"/treasury"}>Staking/Treasury</Link>
             </li>
             <li>
               <Link href={

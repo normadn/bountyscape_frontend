@@ -1,22 +1,14 @@
 /* eslint-disable @next/next/no-img-element */
 import type { NextPage } from "next";
-import styles from "../styles/Home.module.css";
-import { GrantRoleEmployer } from "../components/scFunctions/write/grantRoleEmployer";
-import { RevokeRoleEmployer } from "../components/scFunctions/write/revokeRoleEmployer";
-import { GrantRoleContractor } from "../components/scFunctions/write/grantRoleContractor";
-import { RevokeRoleContractor } from "../components/scFunctions/write/revokeRoleContractor";
 import Quadrata from "../utils/Quadrata.json";
 import Bountyscape from '../utils/Bountyscape.json'
-
-
-import QUADRATA_READER_ABI from "../components/quadrata/kyc";
 import DemoApp from "../components/quadrata/all";
 import { useAccount, useContractRead, usePrepareContractWrite, useNetwork, useBalance } from "wagmi";
 import { ethers } from "ethers";
 import { useEffect, useState } from "react";
-import Link from "next/link";
 import { Result } from "ethers/lib/utils";
 import { ClaimFunds } from "../components/scFunctions/write/claimFunds";
+import { evmosToEth, ethToEvmos } from "@tharsis/address-converter";
 
 
 
@@ -28,30 +20,27 @@ async function GetIPFS(bounties: string | Result | undefined) {
   let ipfs = new Array<JSON>;
 
   if (bounties !== undefined && bounties !== [] && bounties !== null && bounties.length !== undefined) {
-      for (let i = 0; i < bounties.length; i++) { 
-        if ( bounties[i] !== '' && bounties[i] !== null && bounties[i] !== undefined) {
+    for (let i = 0; i < bounties.length; i++) {
+      if (bounties[i] !== '' && bounties[i] !== null && bounties[i] !== undefined) {
         const bounty = await fetch('https://gateway.pinata.cloud/ipfs/' + bounties[i])
         ipfs.push(await bounty.json());
 
-        } 
+      }
     }
-    } else 
-    {
-      console.log("No bounty found");
-    }
-  
-  return ipfs ;  
-
+  } else {
+    console.log("No bounty found");
   }
+
+  return ipfs;
+
+}
 
 const Account: NextPage = () => {
 
 
-  const { address, isConnecting, isDisconnected } = useAccount()
+  const { address } = useAccount()
 
-  const { data:balanceUser, isErrorB, isLoadingB } = useBalance({
-    addressOrName: address,
-  })
+
 
   const { chain } = useNetwork();
   const contractAddr =
@@ -66,10 +55,10 @@ const Account: NextPage = () => {
   const [data, setData] = useState<JSON[]>([]);
   const [bounty, setBounty] = useState<JSON[]>([]);
   const [tokenId, setTokenId] = useState<any>([]);
-  const [reward , setReward] = useState<any>([]);
+  const [reward, setReward] = useState<any>([]);
 
 
-  const { data:isBusiness, isLoading:isLoadingTokenId, isSuccess:isSuccessTokenId, error } = useContractRead({
+  const { data: isBusiness, isLoading: isLoadingTokenId, isSuccess: isSuccessTokenId, error } = useContractRead({
     addressOrName: "0x2B212B47Faf2040cA4782e812048F5aE8ad5Fa2f",
     contractInterface: Quadrata,
     functionName: 'getAttributesFree',
@@ -91,27 +80,28 @@ const Account: NextPage = () => {
 
 
 
-  useEffect (() => {
+  useEffect(() => {
     try {
-    const provider = new ethers.providers.Web3Provider(window.ethereum as any);
-    const signer = provider.getSigner();
-    const bountyscape = new ethers.Contract("0xB4902E7c5F1645B955E565Cd9d49b04B8770A1Bd", Bountyscape.abi, provider);
-    const ipfsArray:any = [];
-    const rewardArray:any = [];
-    for (let i = 0; i < 1000; i++) {
-      bountyscape.balanceOf(signer.getAddress(), i).then((balance: { toString: () => string; }) => {
-        if (balance?.toString() !== "0") {
-          bountyscape.tokenIDtoIPFS(i).then((ipfs: any) => {
-            ipfsArray.push(ipfs);
+      const provider = new ethers.providers.Web3Provider(window.ethereum as any);
+      const signer = provider.getSigner();
+      const bountyscape = new ethers.Contract("0xB4902E7c5F1645B955E565Cd9d49b04B8770A1Bd", Bountyscape.abi, provider);
+      const ipfsArray: any = [];
+      const rewardArray: any = [];
+      for (let i = 0; i < 1000; i++) {
+        bountyscape.balanceOf(signer.getAddress(), i).then((balance: { toString: () => string; }) => {
+          if (balance?.toString() !== "0") {
+            bountyscape.tokenIDtoIPFS(i).then((ipfs: any) => {
+              ipfsArray.push(ipfs);
             })
-          bountyscape.tokenIDtoReward(i).then((reward: any) => {
-            rewardArray.push(ethers.utils.formatEther(reward.toString()));
+            bountyscape.tokenIDtoReward(i).then((reward: any) => {
+              rewardArray.push(ethers.utils.formatEther(reward.toString()));
             })
           }
-      })}
+        })
+      }
       setBounty(ipfsArray);
       setReward(rewardArray);
-      (window.ethereum as any).on('accountsChanged', () => {((window as any).location.reload())})
+      (window.ethereum as any).on('accountsChanged', () => { ((window as any).location.reload()) })
 
     } catch (error) {
       console.log(error);
@@ -120,34 +110,37 @@ const Account: NextPage = () => {
 
 
 
-  useEffect (() => {
+  useEffect(() => {
     if (bounty === undefined && data === undefined) {
-      
+
     } else {
-    GetIPFS(bounty)
-    .then((res) => {
-    setData(res);
-    setIsLoaded(true)})
-    .catch((e) => {
-      setIsLoaded(false);
-      console.log(e);
-    })}}, [bounty, data, isLoaded]);
+      GetIPFS(bounty)
+        .then((res) => {
+          setData(res);
+          setIsLoaded(true)
+        })
+        .catch((e) => {
+          setIsLoaded(false);
+          console.log(e);
+        })
+    }
+  }, [bounty, data, isLoaded]);
 
-  useEffect (() => {
-  if (isSuccessTokenId) {
-  if (isBusiness?.[0].toString() === "0x7749ed7587e6dbf171ce6be50bea67236732d7ccfd51e327bc28b612ec06faa7") {
-  setStatus ("Verifed KYB - You are a verified business")
-  setDisabled(true);
-  } else if (isBusiness?.[0].toString() === "0xa357fcb91396b2afa7ab60192e270c625a2eb250b8f839ddb179f207b40459b4") {
-  setStatus("Verified KYC - You are a verified individual")
-  setDisabled(true);
-  }
-  } else {
-  setStatus("Not Verified KYC/KYB - Become Verified:")
-  setDisabled(false);
+  useEffect(() => {
+    if (isSuccessTokenId) {
+      if (isBusiness?.[0].toString() === "0x7749ed7587e6dbf171ce6be50bea67236732d7ccfd51e327bc28b612ec06faa7") {
+        setStatus("Verifed KYB - You are a verified business")
+        setDisabled(true);
+      } else if (isBusiness?.[0].toString() === "0xa357fcb91396b2afa7ab60192e270c625a2eb250b8f839ddb179f207b40459b4") {
+        setStatus("Verified KYC - You are a verified individual")
+        setDisabled(true);
+      }
+    } else {
+      setStatus("Not Verified KYC/KYB - Become Verified:")
+      setDisabled(false);
 
-  }
-  } , [isSuccessTokenId, isBusiness])
+    }
+  }, [isSuccessTokenId, isBusiness])
 
 
   return (
@@ -155,6 +148,24 @@ const Account: NextPage = () => {
       <div className="grid justify-items-center">
         <div className="text-2xl font-bold mt-8">{isErrorContractor && !isErrorEmployer ? "Employer" : "Contractor"} Account Overview</div>
         <br />
+       
+        
+        <div className="stats stats-vertical shadow">
+  
+  <div className="stat">
+    <div className="stat-title">Your Ethereum Address</div>
+    <div className="stat-value"> <div className="text-xl font-bold mt-8">{address}</div></div>
+  </div>
+  
+  <div className="stat">
+    <div className="stat-title">Your Cosmos Address</div>
+    <div className="stat-value"><div className="text-xl font-bold mt-8">{ethToEvmos(String(address))}</div></div>
+  </div>
+  
+  
+  
+</div>
+
         <div className="stats shadow">
           {/* <div className="stat">
             <div className="stat-figure text-primary">
@@ -173,11 +184,7 @@ const Account: NextPage = () => {
                 {Number(balanceUser?.formatted).toFixed(2)}{" "}
                 {balanceUser?.symbol}{" "}
               </div>
-            
           </div> */}
-
-    
-
           {/* <div className="stat">
             <div className="stat-figure text-secondary">
               <div className="avatar online">
@@ -200,17 +207,10 @@ const Account: NextPage = () => {
         {/* <GrantRoleContractor /> */}
         <br />
         {/* <RevokeRoleContractor /> */}
-
-
-
-        
-
-
-
         {(!isLoaded && isErrorContractor) && <p>loading bounties...</p>}
 
-{(isLoaded && !isErrorContractor) && (
-  <><div className="text-xl font-bold mt-8">Your claimed bountyscape NFTs:</div><div className="grid grid-cols-1 gap-4">
+        {(isLoaded && !isErrorContractor) && (
+          <><div className="text-xl font-bold mt-8">Your claimed bountyscape NFTs:</div><div className="grid grid-cols-1 gap-4">
             {data.map((item: any, i: number) => (
               <div
                 className="card card-compact w-96 bg-base-100 shadow-xl border-10px border-base-200 rounded-lg"
@@ -235,34 +235,25 @@ const Account: NextPage = () => {
             )
             )}
           </div></>
-)}
-
-
-
-
-
+        )}
         <br />
-
-        <div className="text-xl font-bold mt-8">{status}</div>
-        <br />
-        <button disabled={disabled} className="btn btn-primary">
-        <label htmlFor="my-modal-3"  className="modal-button">
-          KYC/KYB
-        </label>
-        </button>
-
-        <input type="checkbox" id="my-modal-3" className="modal-toggle" />
-        <div className="modal">
-          <div className="modal-box relative">
-            <label
-              htmlFor="my-modal-3"
-              className="btn btn-primary btn-circle absolute right-2 top-2"
-            >
-              ✕
+        { chain?.name === "Goerli" && (
+        <><div className="text-xl font-bold mt-8">{status}</div><br /><button disabled={disabled} className="btn btn-primary">
+            <label htmlFor="my-modal-3" className="modal-button">
+              KYC/KYB
             </label>
-            <DemoApp />
-          </div>
-        </div>
+          </button><input type="checkbox" id="my-modal-3" className="modal-toggle" /><div className="modal">
+              <div className="modal-box relative">
+                <label
+                  htmlFor="my-modal-3"
+                  className="btn btn-primary btn-circle absolute right-2 top-2"
+                >
+                  ✕
+                </label>
+                <DemoApp />
+              </div>
+            </div></>
+        )}
       </div>
     </main>
   );

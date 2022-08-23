@@ -5,56 +5,53 @@ import axios from "axios";
 interface ipfsData {
   name: string;
   description: string;
-  attributes: [{trait_type: string, value: string}];
+  attributes: [
+    { trait_type: string; value: string },
+    { trait_type: string; value: string }
+  ];
   image: string;
   external_url: string;
 }
 
-
 async function createIPFS(bounty: ipfsData | undefined) {
+  const config = {
+    method: "post",
+    url: "https://api.pinata.cloud/pinning/pinJSONToIPFS",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization:
+        "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySW5mb3JtYXRpb24iOnsiaWQiOiIyZmFiY2NmMC1hNDI5LTRiOTItOWI3Mi1mMmQ3YjI2ZWRlNWQiLCJlbWFpbCI6Im1lQGZsby5iZXJsaW4iLCJlbWFpbF92ZXJpZmllZCI6dHJ1ZSwicGluX3BvbGljeSI6eyJyZWdpb25zIjpbeyJpZCI6IkZSQTEiLCJkZXNpcmVkUmVwbGljYXRpb25Db3VudCI6MX1dLCJ2ZXJzaW9uIjoxfSwibWZhX2VuYWJsZWQiOmZhbHNlLCJzdGF0dXMiOiJBQ1RJVkUifSwiYXV0aGVudGljYXRpb25UeXBlIjoic2NvcGVkS2V5Iiwic2NvcGVkS2V5S2V5IjoiNmUyNWNhOGRiODAxZDE5OWRhYTAiLCJzY29wZWRLZXlTZWNyZXQiOiIyYTRjZWRjNjA0OTQ4MjY4NDFhZDhmOWFmYTI5NTg3YjVkYTc3MDY2OTQwNTMyZTFhYThmZGNmOTdlNWUzY2M0IiwiaWF0IjoxNjYwMjEyNjQ1fQ.yg5pYYZsVczp36GeKx91vgsrVb6Msn5xMkdoPe08Js0",
+    },
+    data: bounty,
+  };
 
-    const config = {
-        method: 'post',
-        url: 'https://api.pinata.cloud/pinning/pinJSONToIPFS',
-        headers: { 
-            'Content-Type': 'application/json', 
-            'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySW5mb3JtYXRpb24iOnsiaWQiOiIyZmFiY2NmMC1hNDI5LTRiOTItOWI3Mi1mMmQ3YjI2ZWRlNWQiLCJlbWFpbCI6Im1lQGZsby5iZXJsaW4iLCJlbWFpbF92ZXJpZmllZCI6dHJ1ZSwicGluX3BvbGljeSI6eyJyZWdpb25zIjpbeyJpZCI6IkZSQTEiLCJkZXNpcmVkUmVwbGljYXRpb25Db3VudCI6MX1dLCJ2ZXJzaW9uIjoxfSwibWZhX2VuYWJsZWQiOmZhbHNlLCJzdGF0dXMiOiJBQ1RJVkUifSwiYXV0aGVudGljYXRpb25UeXBlIjoic2NvcGVkS2V5Iiwic2NvcGVkS2V5S2V5IjoiNmUyNWNhOGRiODAxZDE5OWRhYTAiLCJzY29wZWRLZXlTZWNyZXQiOiIyYTRjZWRjNjA0OTQ4MjY4NDFhZDhmOWFmYTI5NTg3YjVkYTc3MDY2OTQwNTMyZTFhYThmZGNmOTdlNWUzY2M0IiwiaWF0IjoxNjYwMjEyNjQ1fQ.yg5pYYZsVczp36GeKx91vgsrVb6Msn5xMkdoPe08Js0'
-        },
-         data : bounty
-};
-
-    const res = await axios(config);
-    return res.data.IpfsHash;
-
-};
+  const res = await axios(config);
+  return res.data.IpfsHash;
+}
 
 function BountyDetail() {
- 
   const [title, setTitle] = useState("");
   const [reward, setReward] = useState("0.000001");
   const [description, setDescription] = useState("");
   const [type, setType] = useState("");
+  const [license, setLicense] = useState("");
   const [bounty, setBounty] = useState<ipfsData>();
   const [ipfsHash, setIpfsHash] = useState("");
 
-
-
   useEffect(() => {
     const bounty: ipfsData = {
-        name: title,
-        description: description,
-        attributes: [{trait_type: "Type", value: type}],
-        image: "https://i.ibb.co/BNdTxfB/NFT.jpg",
-        external_url: "https://bountyscape.io",
-      };
-      setBounty(bounty);
-      setReward(reward);
-  }, [description, title, type, reward]);
-
-
-
-
-
+      name: title,
+      description: description,
+      attributes: [
+        { trait_type: "Type", value: type },
+        { trait_type: "License", value: license },
+      ],
+      image: "https://i.ibb.co/BNdTxfB/NFT.jpg",
+      external_url: "https://bountyscape.io",
+    };
+    setBounty(bounty);
+    setReward(reward);
+  }, [description, title, type, reward, license]);
 
   console.log(bounty);
 
@@ -109,37 +106,65 @@ function BountyDetail() {
             <option>Website</option>
             <option>Consulting</option>
           </select>
+          <label className="label">
+            <span className="label-text">License Requirement</span>
+          </label>
+          <select
+            className="select select-bordered select-primary"
+            onChange={(e) => setLicense(e.target.value)}
+          >
+            <option disabled selected>
+              Select License Type Requirement
+            </option>
+            <option>apache-2.0</option>
+            <option>cc</option>
+            <option>ecl-2.0</option>
+            <option>eupl-1.1</option>
+            <option>gpl-2.0</option>
+            <option>gpl-3.0</option>
+            <option>isc</option>
+            <option>mit</option>
+            <option>mpl-2.0</option>
+            <option>unlicense</option>
+            <option>none</option>
+          </select>
           <label className="label"></label>
         </div>
-        
-        <label htmlFor="mint-modal" className="btn btn-primary  modal-button" onClick={async () => setIpfsHash (await createIPFS(bounty))}>Mint Bounty NFT</label>
+
+        <label
+          htmlFor="mint-modal"
+          className="btn btn-primary  modal-button"
+          onClick={async () => setIpfsHash(await createIPFS(bounty))}
+        >
+          Mint Bounty NFT
+        </label>
       </div>
 
       <input type="checkbox" id="mint-modal" className="modal-toggle" />
       <div className="modal">
         <div className="modal-box">
-          <h3 className="font-bold text-lg">
-            Mint Bounty NFT?
-          </h3>
+          <h3 className="font-bold text-lg">Mint Bounty NFT?</h3>
           <p className="py-4">
             The following bounty will be created: {ipfsHash}
           </p>
           <div className="modal-action">
-            
             <label htmlFor="mint-modal" className="btn">
               Close
             </label>
             {(ipfsHash === "" ? true : false) && (
-             <button className="btn btn-primary" disabled="true">Waiting for IPFS</button>
+              <button className="btn btn-primary" disabled="true">
+                Waiting for IPFS
+              </button>
             )}
             {(ipfsHash !== "" ? true : false) && (
-             <CreateBounty ipfsContent={ipfsHash}  val={reward} htmlFor="mint-modal" className="btn btn-primary " />
+              <CreateBounty
+                ipfsContent={ipfsHash}
+                val={reward}
+                htmlFor="mint-modal"
+                className="btn btn-primary "
+              />
             )}
           </div>
-          
-            
-            
-          
         </div>
       </div>
     </main>
