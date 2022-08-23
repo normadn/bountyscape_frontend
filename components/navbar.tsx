@@ -7,10 +7,11 @@ import Bountyscape from "../utils/Bountyscape.json";
 
 const Navbar = () => {
   const { chain } = useNetwork();
-  const contractAddr =
-    chain?.name === "Goerli"
-      ? "0xB4902E7c5F1645B955E565Cd9d49b04B8770A1Bd"
-      : "0x7bE0571a42bF0e4429d1fbcECA791575CFb73b4E";
+  const contractAddr = chain?.name === "Goerli"
+      ? "0xb049977f9a53dc29aabbb67f9f9a72571a7835f2"
+      : chain?.name === "Evmos Testnet" 
+      ? "0x7bE0571a42bF0e4429d1fbcECA791575CFb73b4E"
+      : "0x548325D23dD7FdcD3aC34daCfb51Ad10CeFd13fd";
 
   const { isError: isErrorEmployer } = usePrepareContractWrite({
     addressOrName: contractAddr,
@@ -53,28 +54,39 @@ const Navbar = () => {
                 <Link href={"/bounties"}>Bounties</Link>
               </li>
               <li>
-                <Link href={"/treasury"}>Staking/Treasury</Link>
+                <Link href={"/staking"}>Staking</Link>
               </li>
+              <div hidden={!isErrorEmployer}>
+                <li>
+                  <Link
+                    href={
+                      !isErrorEmployer && !isErrorContractor
+                        ? "/onboarding"
+                        : "/account"
+                    }
+                  >
+                    Contractor Dashboard
+                  </Link>
+                </li>
+              </div>
               <li>
-                <Link href={
-              !isErrorEmployer && !isErrorContractor
-                ? "/onboarding"
-                : "/account"
-            }>Account</Link>
+                <Link href={"/dao"}>DAO</Link>
               </li>
             </ul>
           </div>
-          <Link href={"/"}><label tabIndex="0" className="btn btn-ghost normal-case text-xl">
-            <Image
-              src="https://i.ibb.co/dDnbRQQ/logosmall.png"
-              width="39.6px"
-              height="31.5px"
-              alt="logo"
-              quality="100"
-              lazyBoundary="400px"
-            />{" "}
-            <div> bountyscape</div>
-          </label></Link>
+          <Link href={"/"}>
+            <label tabIndex="0" className="btn btn-ghost normal-case text-xl">
+              <Image
+                src="https://i.ibb.co/dDnbRQQ/logosmall.png"
+                width="39.6px"
+                height="31.5px"
+                alt="logo"
+                quality="100"
+                lazyBoundary="400px"
+              />{" "}
+              <div> bountyscape</div>
+            </label>
+          </Link>
         </div>
         <div className="navbar-center hidden lg:flex">
           <ul className="menu menu-horizontal p-0">
@@ -82,14 +94,23 @@ const Navbar = () => {
               <Link href={"/bounties"}>Bounties</Link>
             </li>
             <li>
-              <Link href={"/treasury"}>Staking/Treasury</Link>
+              <Link href={"/staking"}>Staking</Link>
             </li>
+            <div hidden={!isErrorEmployer}>
+              <li>
+                <Link
+                  href={
+                    !isErrorEmployer && !isErrorContractor
+                      ? "/onboarding"
+                      : "/account"
+                  }
+                >
+                  Contractor Dashboard
+                </Link>
+              </li>
+            </div>
             <li>
-              <Link href={
-              !isErrorEmployer && !isErrorContractor
-                ? "/onboarding"
-                : "/account"
-            }>Account</Link>
+              <Link href={"/dao"}>DAO</Link>
             </li>
           </ul>
         </div>

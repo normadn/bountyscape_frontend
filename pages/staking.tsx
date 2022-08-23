@@ -1,6 +1,5 @@
 /* eslint-disable @next/next/no-img-element */
 import type { NextPage } from "next";
-import styles from "../styles/Home.module.css";
 import Image from "next/image";
 import {
   useAccount,
@@ -8,9 +7,6 @@ import {
   useContractWrite,
   useNetwork,
   usePrepareContractWrite,
-  useSignMessage,
-  useSignTypedData,
-  useWaitForTransaction,
 } from "wagmi";
 import { useEffect, useState } from "react";
 import { ethers } from "ethers";
@@ -100,26 +96,20 @@ async function evmosStaking(address: any, amount: any) {
   console.log(response);
 }
 
-const Treasury: NextPage = () => {
+const Staking: NextPage = () => {
   const [stake, setStake] = useState(0);
 
   const { chain } = useNetwork();
   const treasuryAddr =
     chain?.name === "Goerli"
-      ? "0x01d476B3198301bC90682FCc4899833E96d018B0"
+      ? "0x53ab03a91696dcc8c4977335dc9764db15f9e6d5"
       : "0x4F26fdA347e6fA2FF2A32E5b2f114DA00cB376E3";
   const { address } = useAccount();
   const { data, isError, isLoading } = useBalance({
     addressOrName: address,
   });
 
-  const {
-    data: TreasuryBalance,
-    isError: isErrorT,
-    isLoading: isLoadingT,
-  } = useBalance({
-    addressOrName: treasuryAddr,
-  });
+  
 
   const pubKey =
     "8CA4F86B049CF763735B4EE466F8E644A9DCE55DB98A0DE9EDC3A245AAB331C86AFBECF51C7A08254E6074672E5355EC"; // swell network pubkey | blockscape :"05b48831c7141420a721d35e78c5daa0a933f66b28ed46729dcff6f8b5ffa658";
@@ -149,8 +139,6 @@ const Treasury: NextPage = () => {
 
   // Query the node
 
-  useEffect(() => {}, []);
-
   // console.log(JSON.stringify(msg.eipToSign))
 
   const {
@@ -160,47 +148,12 @@ const Treasury: NextPage = () => {
     write,
   } = useContractWrite(config);
 
-  // Cosmos Staking
 
   return (
     <>
       <main className="min-h-screen">
         <div className="grid justify-items-center">
-          <div className="text-2xl font-bold mt-8">bountyscape treasury</div>
-          <br />
-          <Image
-            src="https://i.ibb.co/N2xdQs5/Logobountyscape.png"
-            width="100%"
-            height="100%"
-            alt="logo"
-            quality="100"
-          />
-          <br />
-
-          <div className="stats bg-primary text-primary-content">
-            <div className="stat">
-              <div className="stat-title">Treasury balance</div>
-              <div hidden={!isLoadingT} className="stat-value">
-                {" "}
-                …{" "}
-              </div>
-              <div hidden={!isErrorT} className="stat-value">
-                {" "}
-                Error{" "}
-              </div>
-              <div hidden={isLoadingT || isErrorT} className="stat-value">
-                {" "}
-                {Number(TreasuryBalance?.formatted).toFixed(2)}{" "}
-                {TreasuryBalance?.symbol}{" "}
-              </div>
-              <div className="stat-actions">
-                {/* <label className="btn btn-sm btn-success">
-                  Staking APY: 8%
-                </label> */}
-              </div>
-            </div>
-          </div>
-
+        
           {chain?.name !== "Goerli" && (
             <>
               <br />
@@ -367,4 +320,4 @@ const Treasury: NextPage = () => {
   );
 };
 
-export default Treasury;
+export default Staking;

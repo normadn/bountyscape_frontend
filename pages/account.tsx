@@ -43,10 +43,11 @@ const Account: NextPage = () => {
 
 
   const { chain } = useNetwork();
-  const contractAddr =
-    chain?.name === "Goerli"
-      ? "0xB4902E7c5F1645B955E565Cd9d49b04B8770A1Bd"
-      : "0x7bE0571a42bF0e4429d1fbcECA791575CFb73b4E";
+  const contractAddr = chain?.name === "Goerli"
+      ? "0xb049977f9a53dc29aabbb67f9f9a72571a7835f2"
+      : chain?.name === "Evmos Testnet" 
+      ? "0x7bE0571a42bF0e4429d1fbcECA791575CFb73b4E"
+      : "0x548325D23dD7FdcD3aC34daCfb51Ad10CeFd13fd";
 
 
   const [status, setStatus] = useState("Not Verified KYC/KYB - Become Verified:");
@@ -84,7 +85,7 @@ const Account: NextPage = () => {
     try {
       const provider = new ethers.providers.Web3Provider(window.ethereum as any);
       const signer = provider.getSigner();
-      const bountyscape = new ethers.Contract("0xB4902E7c5F1645B955E565Cd9d49b04B8770A1Bd", Bountyscape.abi, provider);
+      const bountyscape = new ethers.Contract("0xb049977f9a53dc29aabbb67f9f9a72571a7835f2", Bountyscape.abi, provider);
       const ipfsArray: any = [];
       const rewardArray: any = [];
       for (let i = 0; i < 1000; i++) {
