@@ -139,7 +139,7 @@ const Home: NextPage = () => {
               href={
                 !isErrorEmployer && !isErrorContractor
                   ? "/onboarding"
-                  : "/bounties"
+                  : "/bounties/create"
               }
             >
               <div>
