@@ -25,9 +25,12 @@ export function CompleteBounty({ipfsId} : {ipfsId: any}) {
 
   return (
     <div>
+      <div className="indicator">
+              <span className="indicator-item indicator-bottom badge badge-primary">& get 5 BST</span> 
       <button className="btn btn-primary " disabled={!write || isLoading} onClick={() => write?.()}>
         {isLoading ? 'Submitting...' : 'Complete Bounty & Claim NFT'}
       </button>
+      </div>
       {isSuccess && (
         <><div className="toast toast-end">
         <div className="alert alert-success">

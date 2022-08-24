@@ -16,7 +16,6 @@ const blockscapeIPFS = create({
   protocol: "https",
 });
 
-console.log (blockscapeIPFS);
 
 async function GetIPFS(bounties: string | Result | undefined) {
 

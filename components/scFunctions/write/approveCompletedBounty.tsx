@@ -1,7 +1,7 @@
 import { usePrepareContractWrite, useContractWrite, useNetwork, useWaitForTransaction } from 'wagmi'
 import Bountyscape from '../../../utils/Bountyscape.json'
 
-export function ApproveCompletedBounty({ipfsId, claimer}) {
+export function ApproveCompletedBounty({ipfsId, claimer} : {ipfsId: any, claimer: any}) {
   const { chain } = useNetwork()
   const contractAddr = chain?.name === "Goerli"
       ? "0xb049977f9a53dc29aabbb67f9f9a72571a7835f2"

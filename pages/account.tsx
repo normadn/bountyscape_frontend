@@ -69,36 +69,35 @@ const Account: NextPage = () => {
 
   async function getBalanceReward() {
     try {
-    const provider = new ethers.providers.Web3Provider(window.ethereum as any);
-    const signer = provider.getSigner();
-    const contractAddr = chain?.name === "Goerli"
-      ? "0xb049977f9a53dc29aabbb67f9f9a72571a7835f2"
-      : chain?.name === "Evmos Testnet" 
-      ? "0x7bE0571a42bF0e4429d1fbcECA791575CFb73b4E"
-      : "0x548325D23dD7FdcD3aC34daCfb51Ad10CeFd13fd";
-    const bountyscape = new ethers.Contract(contractAddr, Bountyscape.abi, provider);
-    const ipfsArray: any = [];
-    const rewardArray: any = [];
-    const address = await signer.getAddress();
-    for (let i = 0; i < 1000; i++) {
-      
-      const balance = await bountyscape.balanceOf(address, i)
+      const provider = new ethers.providers.Web3Provider(window.ethereum as any);
+      const signer = provider.getSigner();
+      const contractAddr = chain?.name === "Goerli"
+        ? "0xb049977f9a53dc29aabbb67f9f9a72571a7835f2"
+        : chain?.name === "Evmos Testnet"
+          ? "0x7bE0571a42bF0e4429d1fbcECA791575CFb73b4E"
+          : "0x548325D23dD7FdcD3aC34daCfb51Ad10CeFd13fd";
+      const bountyscape = new ethers.Contract(contractAddr, Bountyscape.abi, provider);
+      const ipfsArray: any = [];
+      const rewardArray: any = [];
+      const address = await signer.getAddress();
+      for (let i = 0; i < 1000; i++) {
+
+        const balance = await bountyscape.balanceOf(address, i)
 
 
-        
+
         if (balance?.toString() !== "0") {
           ipfsArray.push(await bountyscape.tokenIDtoIPFS(i))
           rewardArray.push(ethers.utils.formatEther(await (await bountyscape.tokenIDtoReward(i)).toString()));
         }
-  
-        return [ipfsArray, rewardArray]
-  }
-} catch (error) {
-  console.log(error);
-}
 
-   
-  
+        return [ipfsArray, rewardArray]
+      }
+    } catch (error) {
+      console.log(error)
+      return [[], []];
+    }
+
   }
 
 
@@ -142,13 +141,14 @@ const Account: NextPage = () => {
   }, []);
 
   useEffect(() => {
-    
-      getBalanceReward().then(([ipfsArray, rewardArray]) => {
-      setBounty(ipfsArray);
-      setReward(rewardArray);
-      (window.ethereum as any).on('accountsChanged', () => { ((window as any).location.reload()) })
-  })
-  }, []);
+    getBalanceReward().then(([ipfsArray, rewardArray]) => {
+      if (ipfsArray !== undefined && rewardArray !== undefined) {
+        setBounty(ipfsArray);
+        setReward(rewardArray);
+        (window.ethereum as any).on('accountsChanged', () => { ((window as any).location.reload()) })
+      }
+    })
+  });
 
 
   if (!showChild) {

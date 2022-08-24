@@ -3,7 +3,6 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import { create } from "ipfs-http-client";
 
-
 const blockscapeIPFS = create({
   host: "ipfs.blockscape.network",
   port: 443,
@@ -38,7 +37,6 @@ async function createIPFS(bounty: ipfsData) {
 
   const { cid } = await blockscapeIPFS.add(JSON.stringify(bounty));
   return cid.toString();
-
 }
 
 function BountyDetail() {
@@ -64,7 +62,6 @@ function BountyDetail() {
     setBounty(bounty);
     setReward(reward);
   }, [description, title, type, reward, license]);
-
 
   return (
     <main className="min-h-screen">
@@ -141,14 +138,18 @@ function BountyDetail() {
           </select>
           <label className="label"></label>
         </div>
-
+        <div className="indicator">
+              <span className="indicator-item indicator-bottom badge badge-primary">& get 1 BST</span> 
         <label
           htmlFor="mint-modal"
           className="btn btn-primary  modal-button"
-          onClick={async () => setIpfsHash(await createIPFS(bounty))}
+          onClick={async () =>
+            setIpfsHash(await createIPFS(bounty as ipfsData))
+          }
         >
           Mint Bounty NFT
         </label>
+        </div>
       </div>
 
       <input type="checkbox" id="mint-modal" className="modal-toggle" />
@@ -163,7 +164,7 @@ function BountyDetail() {
               Close
             </label>
             {(ipfsHash === "" ? true : false) && (
-              <button className="btn btn-primary" disabled="true">
+              <button className="btn btn-primary" disabled={true}>
                 Waiting for IPFS
               </button>
             )}
