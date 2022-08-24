@@ -1,8 +1,7 @@
+import Router from 'next/router'
+import { useEffect } from 'react';
 import { usePrepareContractWrite, useContractWrite, useWaitForTransaction, useNetwork } from 'wagmi'
 import Bountyscape from '../../../utils/Bountyscape.json'
-
-
-
 
 export function GrantRoleEmployer() {
 
@@ -31,36 +30,46 @@ export function GrantRoleEmployer() {
     hash: data?.hash,
   })
 
+  useEffect(() => {
+    if(isSuccess) {
+      setTimeout(() => {
+        Router.push('/bounties')
+      }, 1000);
+    }
+  }, [isSuccess]);
+
   return (
     <div>
       <button className="btn btn-primary my-8 " disabled={!write || isLoading || isErrorContractor} onClick={() => write?.()}>
         {isLoading ? 'Setting Status...' : 'Become Employer'}
       </button>
       {isSuccess && (
-        <><div className="toast toast-end">
-        <div className="alert alert-success">
-          <div>
-          <div>
-          You are now an Employer
-          {/* <div>
-            <a href={`https://evm.evmos.dev/tx/${data?.hash}`}>Evmos Explorer</a>
-          </div> */}
-        </div>
+        <>
+          <div className="toast toast-end">
+          <div className="alert alert-success">
+            <div>
+            <div>
+            You are now an Employer
+            {/* <div>
+              <a href={`https://evm.evmos.dev/tx/${data?.hash}`}>Evmos Explorer</a>
+            </div> */}
+            </div>
+            </div>
+            </div>
           </div>
-        </div>
-      </div></>
+        </>
       )}
       {(isError) && (
         
-      <><div className="toast toast-end">
+      <>
+        <div className="toast toast-end">
           <div className="alert alert-error">
             <div>
               <span>{(prepareError || error)?.message}</span>
             </div>
           </div>
-        </div></>
-        
-          
+        </div>
+      </>
       )}
     </div>
   )

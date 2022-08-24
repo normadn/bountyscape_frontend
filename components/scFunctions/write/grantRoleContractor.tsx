@@ -1,3 +1,5 @@
+import Router from 'next/router'
+import { useEffect } from 'react';
 import { usePrepareContractWrite, useContractWrite, useWaitForTransaction, useNetwork } from 'wagmi'
 import Bountyscape from '../../../utils/Bountyscape.json'
 
@@ -26,6 +28,14 @@ export function GrantRoleContractor() {
   const { isLoading, isSuccess } = useWaitForTransaction({
     hash: data?.hash,
   })
+
+  useEffect(() => {
+    if(isSuccess) {
+      setTimeout(() => {
+        Router.push('/bounties')
+      }, 1000);
+    }
+  }, [isSuccess]);
 
   return (
     <div>

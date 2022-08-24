@@ -10,13 +10,7 @@ import { Result } from "ethers/lib/utils";
 import { ClaimFunds } from "../components/scFunctions/write/claimFunds";
 import { evmosToEth, ethToEvmos } from "@tharsis/address-converter";
 
-
-
-
 async function GetIPFS(bounties: string | Result | undefined) {
-
-
-
   let ipfs = new Array<JSON>;
 
   if (bounties !== undefined && bounties !== [] && bounties !== null && bounties.length !== undefined) {
@@ -36,11 +30,7 @@ async function GetIPFS(bounties: string | Result | undefined) {
 }
 
 const Account: NextPage = () => {
-
-
   const { address } = useAccount()
-
-
 
   const { chain } = useNetwork();
   const contractAddr = chain?.name === "Goerli"
@@ -48,7 +38,6 @@ const Account: NextPage = () => {
       : chain?.name === "Evmos Testnet" 
       ? "0x7bE0571a42bF0e4429d1fbcECA791575CFb73b4E"
       : "0x548325D23dD7FdcD3aC34daCfb51Ad10CeFd13fd";
-
 
   const [status, setStatus] = useState("Not Verified KYC/KYB - Become Verified:");
   const [disabled, setDisabled] = useState(true);
@@ -79,8 +68,6 @@ const Account: NextPage = () => {
     functionName: "grantRoleContractor",
   });
 
-
-
   useEffect(() => {
     try {
       const provider = new ethers.providers.Web3Provider(window.ethereum as any);
@@ -108,8 +95,6 @@ const Account: NextPage = () => {
       console.log(error);
     }
   }, []);
-
-
 
   useEffect(() => {
     if (bounty === undefined && data === undefined) {
@@ -143,29 +128,21 @@ const Account: NextPage = () => {
     }
   }, [isSuccessTokenId, isBusiness])
 
-
   return (
     <main className="min-h-screen">
       <div className="grid justify-items-center">
         <div className="text-2xl font-bold mt-8">{isErrorContractor && !isErrorEmployer ? "Employer" : "Contractor"} Account Overview</div>
         <br />
-       
-        
         <div className="stats stats-vertical shadow">
-  
-  <div className="stat">
-    <div className="stat-title">Your Ethereum Address</div>
-    <div className="stat-value"> <div className="text-xl font-bold mt-8">{address}</div></div>
-  </div>
-  
-  <div className="stat">
-    <div className="stat-title">Your Cosmos Address</div>
-    <div className="stat-value"><div className="text-xl font-bold mt-8">{ethToEvmos(String(address))}</div></div>
-  </div>
-  
-  
-  
-</div>
+        <div className="stat">
+          <div className="stat-title">Your Ethereum Address</div>
+          <div className="stat-value"> <div className="text-xl font-bold mt-8">{address}</div></div>
+        </div>
+        <div className="stat">
+          <div className="stat-title">Your Cosmos Address</div>
+          <div className="stat-value"><div className="text-xl font-bold mt-8">{ethToEvmos(String(address))}</div></div>
+        </div>
+      </div>
 
         <div className="stats shadow">
           {/* <div className="stat">
