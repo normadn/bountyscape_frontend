@@ -5,6 +5,16 @@ import { useEffect, useState } from 'react';
 import { Result } from "ethers/lib/utils";
 import { GetReward } from "../../components/scFunctions/read/getReward";
 import { DeleteBounty } from "../../components/scFunctions/write/deleteBounty";
+import { create } from "ipfs-http-client";
+
+
+const blockscapeIPFS = create({
+  host: "ipfs.blockscape.network",
+  port: 443,
+  protocol: "https",
+});
+
+console.log (blockscapeIPFS);
 
 async function GetIPFS(bounties: string | Result | undefined) {
 
@@ -16,8 +26,21 @@ async function GetIPFS(bounties: string | Result | undefined) {
   if (bounties !== undefined && bounties !== [] && bounties !== null) {
       for (let i = 0; i < bounties.length; i++) { 
         if ( bounties[i] !== '' && bounties[i] !== null && bounties[i] !== undefined) {
-        const bounty = await fetch('https://gateway.pinata.cloud/ipfs/' + bounties[i])
-        ipfs.push(await bounty.json());
+
+          const source = blockscapeIPFS.cat(bounties[i]);
+          const data = [];
+          for await (const chunk of source) {
+            data.push(chunk);
+          }
+          const byteArray = data.toString().split(",");
+          var bounty = "";
+          for (let j = 0; j < byteArray.length; j++) {
+            bounty += String.fromCharCode(byteArray[j]);
+          }
+
+        //const bounty = await fetch('https://gateway.pinata.cloud/ipfs/' + bounties[i])
+        //ipfs.push(await bounty.json());
+        ipfs.push(JSON.parse(bounty));
         bountyArray.push(bounties[i]);
         tokenIdArray.push(i);
         } 
@@ -80,7 +103,7 @@ function BountyOverview() {
   
 
   return (
-    <main className="min-h-[85vh]">
+    <main className="min-h-screen">
       <div className="grid justify-items-center">
       <Link href={"/bounties/create"}>
         <button 

@@ -148,7 +148,18 @@ const Staking: NextPage = () => {
     write,
   } = useContractWrite(config);
 
+  const [showChild, setShowChild] = useState(false);
+  useEffect(() => {
+    setShowChild(true);
+  }, []);
 
+  if (!showChild) {
+    return null;
+  }
+
+  if (typeof window === "undefined") {
+    return <></>;
+  } else {
   return (
     <>
       <main className="min-h-screen">
@@ -172,10 +183,9 @@ const Staking: NextPage = () => {
                 <div className="card-body">
                   <div className="alert alert-success shadow-lg">
                     <span className="font-bold text-center">
-                      Commission 5% | APR 302.26%
+                      Commission 5% | APR ~ 302.26%
                     </span>
                   </div>
-
                   <div className="alert alert-warning shadow-lg text-center">
                     <div className="font-bold">
                       <span>
@@ -318,6 +328,7 @@ const Staking: NextPage = () => {
       </main>
     </>
   );
-};
+}}
+;
 
 export default Staking;

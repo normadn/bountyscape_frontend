@@ -34,8 +34,8 @@ const Account: NextPage = () => {
 
   const { chain } = useNetwork();
   const contractAddr = chain?.name === "Goerli"
-      ? "0xb049977f9a53dc29aabbb67f9f9a72571a7835f2"
-      : chain?.name === "Evmos Testnet" 
+    ? "0xb049977f9a53dc29aabbb67f9f9a72571a7835f2"
+    : chain?.name === "Evmos Testnet"
       ? "0x7bE0571a42bF0e4429d1fbcECA791575CFb73b4E"
       : "0x548325D23dD7FdcD3aC34daCfb51Ad10CeFd13fd";
 
@@ -44,7 +44,6 @@ const Account: NextPage = () => {
   const [isLoaded, setIsLoaded] = useState(false);
   const [data, setData] = useState<JSON[]>([]);
   const [bounty, setBounty] = useState<JSON[]>([]);
-  const [tokenId, setTokenId] = useState<any>([]);
   const [reward, setReward] = useState<any>([]);
 
 
@@ -68,33 +67,41 @@ const Account: NextPage = () => {
     functionName: "grantRoleContractor",
   });
 
-  useEffect(() => {
+  async function getBalanceReward() {
     try {
-      const provider = new ethers.providers.Web3Provider(window.ethereum as any);
-      const signer = provider.getSigner();
-      const bountyscape = new ethers.Contract("0xb049977f9a53dc29aabbb67f9f9a72571a7835f2", Bountyscape.abi, provider);
-      const ipfsArray: any = [];
-      const rewardArray: any = [];
-      for (let i = 0; i < 1000; i++) {
-        bountyscape.balanceOf(signer.getAddress(), i).then((balance: { toString: () => string; }) => {
-          if (balance?.toString() !== "0") {
-            bountyscape.tokenIDtoIPFS(i).then((ipfs: any) => {
-              ipfsArray.push(ipfs);
-            })
-            bountyscape.tokenIDtoReward(i).then((reward: any) => {
-              rewardArray.push(ethers.utils.formatEther(reward.toString()));
-            })
-          }
-        })
-      }
-      setBounty(ipfsArray);
-      setReward(rewardArray);
-      (window.ethereum as any).on('accountsChanged', () => { ((window as any).location.reload()) })
+    const provider = new ethers.providers.Web3Provider(window.ethereum as any);
+    const signer = provider.getSigner();
+    const contractAddr = chain?.name === "Goerli"
+      ? "0xb049977f9a53dc29aabbb67f9f9a72571a7835f2"
+      : chain?.name === "Evmos Testnet" 
+      ? "0x7bE0571a42bF0e4429d1fbcECA791575CFb73b4E"
+      : "0x548325D23dD7FdcD3aC34daCfb51Ad10CeFd13fd";
+    const bountyscape = new ethers.Contract(contractAddr, Bountyscape.abi, provider);
+    const ipfsArray: any = [];
+    const rewardArray: any = [];
+    const address = await signer.getAddress();
+    for (let i = 0; i < 1000; i++) {
+      
+      const balance = await bountyscape.balanceOf(address, i)
 
-    } catch (error) {
-      console.log(error);
-    }
-  }, []);
+
+        
+        if (balance?.toString() !== "0") {
+          ipfsArray.push(await bountyscape.tokenIDtoIPFS(i))
+          rewardArray.push(ethers.utils.formatEther(await (await bountyscape.tokenIDtoReward(i)).toString()));
+        }
+  
+        return [ipfsArray, rewardArray]
+  }
+} catch (error) {
+  console.log(error);
+}
+
+   
+  
+  }
+
+
 
   useEffect(() => {
     if (bounty === undefined && data === undefined) {
@@ -128,113 +135,103 @@ const Account: NextPage = () => {
     }
   }, [isSuccessTokenId, isBusiness])
 
-  return (
-    <main className="min-h-screen">
-      <div className="grid justify-items-center">
-        <div className="text-2xl font-bold mt-8">{isErrorContractor && !isErrorEmployer ? "Employer" : "Contractor"} Account Overview</div>
-        <br />
-        <div className="stats stats-vertical shadow">
-        <div className="stat">
-          <div className="stat-title">Your Ethereum Address</div>
-          <div className="stat-value"> <div className="text-xl font-bold mt-8">{address}</div></div>
-        </div>
-        <div className="stat">
-          <div className="stat-title">Your Cosmos Address</div>
-          <div className="stat-value"><div className="text-xl font-bold mt-8">{ethToEvmos(String(address))}</div></div>
-        </div>
-      </div>
 
-        <div className="stats shadow">
-          {/* <div className="stat">
-            <div className="stat-figure text-primary">
+  const [showChild, setShowChild] = useState(false);
+  useEffect(() => {
+    setShowChild(true);
+  }, []);
+
+  useEffect(() => {
+    
+      getBalanceReward().then(([ipfsArray, rewardArray]) => {
+      setBounty(ipfsArray);
+      setReward(rewardArray);
+      (window.ethereum as any).on('accountsChanged', () => { ((window as any).location.reload()) })
+  })
+  }, []);
+
+
+  if (!showChild) {
+    return null;
+  }
+
+  if (typeof window === 'undefined') {
+    return <></>;
+  } else {
+    return (
+      <main className="min-h-screen">
+        <div className="grid justify-items-center">
+          <div className="text-2xl font-bold mt-8">{isErrorContractor && !isErrorEmployer ? "Employer" : "Contractor"} Account Overview</div>
+          <br />
+          <div className="stats stats-vertical shadow">
+            <div className="stat">
+              <div className="stat-title">Your Ethereum Address</div>
+              <div className="stat-value"> <div className="text-xl font-bold mt-8">{address}</div></div>
             </div>
-            <div className="stat-title">Account Balance</div>
-            <div hidden={!isLoadingB} className="stat-value">
-                {" "}
-                Fetching balance…{" "}
-              </div>
-              <div hidden={!isErrorB} className="stat-value">
-                {" "}
-                Error fetching balance{" "}
-              </div>
-              <div hidden={isLoadingB || isErrorB} className="stat-value">
-                {" "}
-                {Number(balanceUser?.formatted).toFixed(2)}{" "}
-                {balanceUser?.symbol}{" "}
-              </div>
-          </div> */}
-          {/* <div className="stat">
-            <div className="stat-figure text-secondary">
-              <div className="avatar online">
-                <div className="w-16 rounded-full">
-                  <img
-                    src="https://placeimg.com/128/128/people"
-                    alt="account"
-                  />
-                </div>
-              </div>
+            <div className="stat">
+              <div className="stat-title">Your Cosmos Address</div>
+              <div className="stat-value"><div className="text-xl font-bold mt-8">{ethToEvmos(String(address))}</div></div>
             </div>
-            <div className="stat-value">86%</div>
-            <div className="stat-title">Tasks done</div>
-            <div className="stat-desc text-secondary">31 tasks remaining</div>
-          </div> */}
-        </div>
+          </div>
 
-        {/* <GrantRoleEmployer /> */}
-        {/* <RevokeRoleEmployer /> */}
-        {/* <GrantRoleContractor /> */}
-        <br />
-        {/* <RevokeRoleContractor /> */}
-        {(!isLoaded && isErrorContractor) && <p>loading bounties...</p>}
+          <div className="stats shadow">
 
-        {(isLoaded && !isErrorContractor) && (
-          <><div className="text-xl font-bold mt-8">Your claimed bountyscape NFTs:</div><div className="grid grid-cols-1 gap-4">
-            {data.map((item: any, i: number) => (
-              <div
-                className="card card-compact w-96 bg-base-100 shadow-xl border-10px border-base-200 rounded-lg"
-                key={i}
-              >
-                <figure>
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img src={item.image} alt={item.name} />
-                </figure>
-                <div className="card-body">
-                  <h2 className="card-title">{item.name}</h2>
-                  <p>{item.description}</p>
-                  <div className="badge badge-outline">{item.attributes[0].value}</div>
-                  <div className="badge badge-outline badge-success">Reward: {reward[i]}</div>
-                  <div className="card-actions justify-end">
+          </div>
 
 
-                    <ClaimFunds ipfsId={bounty[i]} />
+          <br />
+
+          {(!isLoaded && isErrorContractor) && <p>loading bounties...</p>}
+
+          {(isLoaded && !isErrorContractor) && (
+            <><div className="text-xl font-bold mt-8">Your claimed bountyscape NFTs:</div><div className="grid grid-cols-1 gap-4">
+              {data.map((item: any, i: number) => (
+                <div
+                  className="card card-compact w-96 bg-base-100 shadow-xl border-10px border-base-200 rounded-lg"
+                  key={i}
+                >
+                  <figure>
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img src={item.image} alt={item.name} />
+                  </figure>
+                  <div className="card-body">
+                    <h2 className="card-title">{item.name}</h2>
+                    <p>{item.description}</p>
+                    <div className="badge badge-outline">{item.attributes[0].value}</div>
+                    <div className="badge badge-outline badge-success">Reward: {reward[i]}</div>
+                    <div className="card-actions justify-end">
+
+
+                      <ClaimFunds ipfsId={bounty[i]} />
+                    </div>
                   </div>
                 </div>
-              </div>
-            )
-            )}
-          </div></>
-        )}
-        <br />
-        { chain?.name === "Goerli" && (
-        <><div className="text-xl font-bold mt-8">{status}</div><br /><button disabled={disabled} className="btn btn-primary">
-            <label htmlFor="my-modal-3" className="modal-button">
-              KYC/KYB
-            </label>
-          </button><input type="checkbox" id="my-modal-3" className="modal-toggle" /><div className="modal">
-              <div className="modal-box relative">
-                <label
-                  htmlFor="my-modal-3"
-                  className="btn btn-primary btn-circle absolute right-2 top-2"
-                >
-                  ✕
-                </label>
-                <DemoApp />
-              </div>
+              )
+              )}
             </div></>
-        )}
-      </div>
-    </main>
-  );
+          )}
+          <br />
+          {chain?.name === "Goerli" && (
+            <><div className="text-xl font-bold mt-8">{status}</div><br /><button disabled={disabled} className="btn btn-primary">
+              <label htmlFor="my-modal-3" className="modal-button">
+                KYC/KYB
+              </label>
+            </button><input type="checkbox" id="my-modal-3" className="modal-toggle" /><div className="modal">
+                <div className="modal-box relative">
+                  <label
+                    htmlFor="my-modal-3"
+                    className="btn btn-primary btn-circle absolute right-2 top-2"
+                  >
+                    ✕
+                  </label>
+                  <DemoApp />
+                </div>
+              </div></>
+          )}
+        </div>
+      </main>
+    );
+  }
 };
 
 export default Account;

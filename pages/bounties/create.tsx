@@ -1,6 +1,14 @@
 import { CreateBounty } from "../../components/scFunctions/write/createBounty";
 import { useState, useEffect } from "react";
 import axios from "axios";
+import { create } from "ipfs-http-client";
+
+
+const blockscapeIPFS = create({
+  host: "ipfs.blockscape.network",
+  port: 443,
+  protocol: "https",
+});
 
 interface ipfsData {
   name: string;
@@ -13,20 +21,24 @@ interface ipfsData {
   external_url: string;
 }
 
-async function createIPFS(bounty: ipfsData | undefined) {
-  const config = {
-    method: "post",
-    url: "https://api.pinata.cloud/pinning/pinJSONToIPFS",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization:
-        "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySW5mb3JtYXRpb24iOnsiaWQiOiIyZmFiY2NmMC1hNDI5LTRiOTItOWI3Mi1mMmQ3YjI2ZWRlNWQiLCJlbWFpbCI6Im1lQGZsby5iZXJsaW4iLCJlbWFpbF92ZXJpZmllZCI6dHJ1ZSwicGluX3BvbGljeSI6eyJyZWdpb25zIjpbeyJpZCI6IkZSQTEiLCJkZXNpcmVkUmVwbGljYXRpb25Db3VudCI6MX1dLCJ2ZXJzaW9uIjoxfSwibWZhX2VuYWJsZWQiOmZhbHNlLCJzdGF0dXMiOiJBQ1RJVkUifSwiYXV0aGVudGljYXRpb25UeXBlIjoic2NvcGVkS2V5Iiwic2NvcGVkS2V5S2V5IjoiNmUyNWNhOGRiODAxZDE5OWRhYTAiLCJzY29wZWRLZXlTZWNyZXQiOiIyYTRjZWRjNjA0OTQ4MjY4NDFhZDhmOWFmYTI5NTg3YjVkYTc3MDY2OTQwNTMyZTFhYThmZGNmOTdlNWUzY2M0IiwiaWF0IjoxNjYwMjEyNjQ1fQ.yg5pYYZsVczp36GeKx91vgsrVb6Msn5xMkdoPe08Js0",
-    },
-    data: bounty,
-  };
+async function createIPFS(bounty: ipfsData) {
+  // const config = {
+  //   method: "post",
+  //   url: "https://api.pinata.cloud/pinning/pinJSONToIPFS",
+  //   headers: {
+  //     "Content-Type": "application/json",
+  //     Authorization:
+  //       "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySW5mb3JtYXRpb24iOnsiaWQiOiIyZmFiY2NmMC1hNDI5LTRiOTItOWI3Mi1mMmQ3YjI2ZWRlNWQiLCJlbWFpbCI6Im1lQGZsby5iZXJsaW4iLCJlbWFpbF92ZXJpZmllZCI6dHJ1ZSwicGluX3BvbGljeSI6eyJyZWdpb25zIjpbeyJpZCI6IkZSQTEiLCJkZXNpcmVkUmVwbGljYXRpb25Db3VudCI6MX1dLCJ2ZXJzaW9uIjoxfSwibWZhX2VuYWJsZWQiOmZhbHNlLCJzdGF0dXMiOiJBQ1RJVkUifSwiYXV0aGVudGljYXRpb25UeXBlIjoic2NvcGVkS2V5Iiwic2NvcGVkS2V5S2V5IjoiNmUyNWNhOGRiODAxZDE5OWRhYTAiLCJzY29wZWRLZXlTZWNyZXQiOiIyYTRjZWRjNjA0OTQ4MjY4NDFhZDhmOWFmYTI5NTg3YjVkYTc3MDY2OTQwNTMyZTFhYThmZGNmOTdlNWUzY2M0IiwiaWF0IjoxNjYwMjEyNjQ1fQ.yg5pYYZsVczp36GeKx91vgsrVb6Msn5xMkdoPe08Js0",
+  //   },
+  //   data: bounty,
+  // };
 
-  const res = await axios(config);
-  return res.data.IpfsHash;
+  // const res = await axios(config);
+  // return res.data.IpfsHash;
+
+  const { cid } = await blockscapeIPFS.add(JSON.stringify(bounty));
+  return cid.toString();
+
 }
 
 function BountyDetail() {
@@ -53,7 +65,6 @@ function BountyDetail() {
     setReward(reward);
   }, [description, title, type, reward, license]);
 
-  console.log(bounty);
 
   return (
     <main className="min-h-screen">

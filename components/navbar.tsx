@@ -1,5 +1,5 @@
 import Link from "next/link";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { ConnectButton } from "@rainbow-me/rainbowkit";
 import Image from "next/image";
 import { usePrepareContractWrite, useNetwork, useAccount } from "wagmi";
@@ -26,12 +26,25 @@ const Navbar = () => {
     functionName: "grantRoleContractor",
   });
 
+  const [showChild, setShowChild] = useState(false);
+  useEffect(() => {
+    setShowChild(true);
+  }, []);
+
+
+  if (!showChild) {
+    return null;
+  }
+
+  if (typeof window === 'undefined') {
+    return <></>;
+  } else {
   return (
     <header>
       <div className="navbar bg-base-100">
         <div className="navbar-start">
           <div className="dropdown">
-            <label className="btn btn-ghost lg:hidden">
+            <label tabIndex="0" className="btn btn-ghost lg:hidden">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 className="h-5 w-5"
@@ -47,7 +60,7 @@ const Navbar = () => {
                 />
               </svg>
             </label>
-            <ul
+            <ul tabIndex="0"
               className="menu menu-compact dropdown-content mt-3 p-2 shadow bg-base-100 rounded-box w-52"
             >
               <li>
@@ -152,6 +165,7 @@ const Navbar = () => {
       </div>
     </header>
   );
+}
 };
 
 export default Navbar;
