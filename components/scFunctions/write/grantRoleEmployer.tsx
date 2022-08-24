@@ -33,7 +33,7 @@ export function GrantRoleEmployer() {
   useEffect(() => {
     if(isSuccess) {
       setTimeout(() => {
-        Router.push('/bounties')
+        Router.push('/bounties/create')
       }, 1000);
     }
   }, [isSuccess]);

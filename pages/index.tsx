@@ -136,12 +136,15 @@ const Home: NextPage = () => {
             <h2 className="card-title">For Employees</h2>
             <p>Outsource work via bounties</p>
             <Link 
-              href={"/bounties/create"}
+              href={
+                !isErrorEmployer && !isErrorContractor
+                  ? "/onboarding"
+                  : "/bounties"
+              }
             >
               <div>
                 <button 
                   className="btn btn-primary mt-2"
-                  disabled={!isErrorContractor}
                 >
                   New Bounty
                 </button>
