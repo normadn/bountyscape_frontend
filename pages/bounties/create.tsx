@@ -138,7 +138,7 @@ function BountyDetail() {
           <label className="label"></label>
         </div>
         <div className="indicator">
-          <span className="indicator-item indicator-bottom badge badge-primary">
+          <span className="indicator-item indicator-bottom badge badge-ghost">
             & get 1 BST
           </span>
           <label
@@ -158,7 +158,7 @@ function BountyDetail() {
         <div className="modal-box">
           <h3 className="font-bold text-lg">Mint Bounty NFT?</h3>
           <p className="py-4">
-            The following bounty will be created: {ipfsHash}
+            The following bounty ID will be created: {ipfsHash}
           </p>
           <div className="modal-action">
             <label htmlFor="mint-modal" className="btn">

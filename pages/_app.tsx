@@ -6,6 +6,8 @@ import {
   RainbowKitProvider,
   getDefaultWallets,
   lightTheme,
+  connectorsForWallets,
+  wallet,
 } from "@rainbow-me/rainbowkit";
 import {
   Chain,
@@ -63,6 +65,19 @@ const { chains, provider, webSocketProvider } = configureChains(
   [evmosChain, evmosTestChain, chain.goerli],
   [publicProvider()]
 );
+
+// const connectors = connectorsForWallets([
+//   {
+//     groupName: 'Suggested',
+//     wallets: [
+//       wallet.metaMask({ chains }),
+//       wallet.walletConnect({ chains }),
+//       wallet.rainbow({ chains }),
+//       wallet.coinbase({ appName: 'Bountyscape', chains }),
+//       wallet.injected({ chains }),
+//     ],
+//   },
+// ]);
 
 const { connectors } = getDefaultWallets({
   appName: "Bountyscape",

@@ -180,14 +180,16 @@ const Home: NextPage = () => {
         Bounty Highlights
       </div>
       <br/>
-      {!isLoaded  && <div> <p>loading bounties...</p> </div>}
+      {!isLoaded  && <div> <button className="btn btn-primary" onClick={() => {(window as any).location.reload()}}>Reload bounties</button> </div>}
 
       {isLoaded && (
         <div>    
         <div className="grid grid-cols-1 gap-4">
+        <div className="carousel w-full">
           {data.map((item:any, i:number ) => (
+            <div className="carousel-item active" key={i}>
           <div
-            className="card card-compact w-96 bg-base-100 shadow-xl border-10px border-base-200 rounded-lg" 
+            className="card card-compact w-96 bg-base-100 shadow-xl border-10px border-base-200 rounded-lg m-3" 
             key={i}
           >
             <figure>
@@ -206,7 +208,9 @@ const Home: NextPage = () => {
             </div>
             <div> <div hidden={!isErrorContractor}><div className="card-actions justify-start"> <DeleteBounty ipfsId={bounty?.[i]}></DeleteBounty></div></div></div>
           </div>
+          </div>
           ))}
+          </div>
         </div>
         </div>
       )}

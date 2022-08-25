@@ -170,7 +170,7 @@ function BountyDetail() {
       <main className="min-h-screen">
         <div className="grid justify-items-center">
           <div className="text-2xl font-bold mt-8">Bounty Details</div>
-          {!isLoaded && <p>loading bounty...</p>}
+          {!isLoaded && <button className="btn btn-primary" onClick={() => {(window as any).location.reload()}}>Reload bounties</button>}
 
           {isLoaded && data && (
             <div className="grid justify-items-center grid-cols-1 gap-4">

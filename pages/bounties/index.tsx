@@ -117,7 +117,7 @@ function BountyOverview() {
         Bounty Overview
       </div>
       <br/>
-      {!isLoaded  && <p>loading bounties...</p>}
+      {!isLoaded  && <button className="btn btn-primary" onClick={() => {(window as any).location.reload()}}>Reload bounties</button>}
 
       {isLoaded && (
         <div className="grid grid-cols-1 gap-4">

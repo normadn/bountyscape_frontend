@@ -35,7 +35,7 @@ export function CompleteBounty({ ipfsId }: { ipfsId: any }) {
   return (
     <div>
       <div className="indicator">
-        <span className="indicator-item indicator-bottom badge badge-primary">
+        <span className="indicator-item indicator-bottom badge badge-ghost">
           & get 5 BST
         </span>
         <button
