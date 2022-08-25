@@ -164,7 +164,9 @@ const Staking: NextPage = () => {
               <>
                 <br />
                 <div className="text-2xl font-bold mt-8">
-                  Stake your {data?.symbol} powered by blockscape validators
+                  Stake your{" "}
+                  {typeof data === "undefined" ? "Evmos" : data?.symbol} powered
+                  by blockscape validators
                 </div>
                 <br />
                 <div className="card w-96 bg-base-100 shadow-xl">
@@ -190,9 +192,10 @@ const Staking: NextPage = () => {
                           <p hidden={isLoading || isError}>
                             {typeof data === "undefined"
                               ? "0"
-                              : (Number(data?.formatted).toFixed(2))} {data?.symbol}
+                              : Number(data?.formatted).toFixed(2)}{" "}
+                            {data?.symbol}
                           </p>
-                          
+
                           <p className="card-actions justify-center">
                             <input
                               type="number"
@@ -209,7 +212,10 @@ const Staking: NextPage = () => {
                               className="btn btn-primary"
                               onClick={() => evmosStaking?.(address, stake)}
                             >
-                              Stake your {data?.symbol}
+                              Stake your{" "}
+                              {typeof data === "undefined"
+                                ? "Evmos"
+                                : data?.symbol}
                             </button>
                           </p>
                         </span>

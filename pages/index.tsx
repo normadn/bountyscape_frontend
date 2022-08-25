@@ -13,6 +13,7 @@ const blockscapeIPFS = create({
   host: "ipfs.blockscape.network",
   port: 443,
   protocol: "https",
+  mode: "no-cors", // maybe fixes the cors issue needs to be observed
 });
 
 
@@ -143,7 +144,7 @@ const Home: NextPage = () => {
             </Link>
           </div>
         </div>
-        <div className="flex justify-center">
+        <div className="">
           {/* <Image
             src="https://i.ibb.co/N2xdQs5/Logobountyscape.png"
             width="180%"
