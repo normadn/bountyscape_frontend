@@ -35,7 +35,7 @@ const Onboarding: NextPage = () => {
   }, [isErrorContractor]);
 
   return (
-    <main className="min-h-[85vh]">
+    <main className="min-h-screen">
       <div className="grid justify-items-center">
         <div className="text-2xl font-bold mt-8">Hello Fren 👋</div>
         <div className="text-2xl mt-4">To get started:</div>

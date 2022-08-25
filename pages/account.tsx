@@ -135,10 +135,6 @@ const Account: NextPage = () => {
   }, [isSuccessTokenId, isBusiness])
 
 
-  const [showChild, setShowChild] = useState(false);
-  useEffect(() => {
-    setShowChild(true);
-  }, []);
 
   useEffect(() => {
     getBalanceReward().then(([ipfsArray, rewardArray]) => {
@@ -149,6 +145,11 @@ const Account: NextPage = () => {
       }
     })
   });
+
+  const [showChild, setShowChild] = useState(false);
+  useEffect(() => {
+    setShowChild(true);
+  }, []);
 
 
   if (!showChild) {

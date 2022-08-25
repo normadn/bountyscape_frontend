@@ -10,6 +10,7 @@ import type { NextPage } from "next";
 import BountyscapeToken from "../utils/BountyscapeToken.json";
 
 import Image from "next/image";
+import { useEffect, useState } from "react";
 
 const DAO: NextPage = () => {
   const { chain } = useNetwork();
@@ -85,6 +86,21 @@ const DAO: NextPage = () => {
     }
   }
 
+
+  const [showChild, setShowChild] = useState(false);
+  useEffect(() => {
+    setShowChild(true);
+  }, []);
+
+  console.log(tBalancSelf)
+
+  if (!showChild) {
+    return null;
+  }
+
+  if (typeof window === 'undefined') {
+    return <></>;
+  } else {
   return (
     <main className="min-h-screen">
       <div className="grid justify-items-center">
@@ -115,7 +131,7 @@ const DAO: NextPage = () => {
               Error{" "}
             </div>
             <div hidden={isLoadingT || isErrorT} className="stat-value">
-              {(Number(tBalanc?.toString()) / 1e18).toFixed(2)} BST
+              {(Number(tBalanc?.toString()) / 1e18).toFixed(2)}  BST
             </div>
             <div className="stat-actions">
               {/* <label className="btn btn-sm btn-success">
@@ -139,7 +155,7 @@ const DAO: NextPage = () => {
               Error{" "}
             </div>
             <div hidden={isLoadingT || isErrorT} className="stat-value">
-              {(Number(tBalancSelf?.toString()) / 1e18).toFixed(2)} BST
+              {(typeof tBalancSelf === "undefined" ? "0" : (Number(tBalancSelf?.toString()) / 1e18).toFixed(2))} BST
             </div>
             <div className="stat-actions">
               {/* <label className="btn btn-sm btn-success">
@@ -266,6 +282,6 @@ const DAO: NextPage = () => {
       </div>
     </main>
   );
-};
+}};
 
 export default DAO;

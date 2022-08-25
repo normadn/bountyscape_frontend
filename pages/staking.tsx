@@ -193,7 +193,7 @@ const Staking: NextPage = () => {
                         <p hidden={!isLoading}> Fetching balance… </p>
                         <p hidden={!isError}> Error fetching balance </p>
                         <p hidden={isLoading || isError}>
-                          {Number(data?.formatted).toFixed(2)} {data?.symbol}{" "}
+                        {(typeof data === "undefined" ? "0" : (Number(data?.toString()) / 1e18).toFixed(2))}
                         </p>
 
                         <br />

@@ -122,13 +122,13 @@ const Home: NextPage = () => {
           </div>
         </div>
         <div className="flex justify-center">
-          <Image
+          {/* <Image
             src="https://i.ibb.co/N2xdQs5/Logobountyscape.png"
             width="180%"
             height="170%"
             alt="logo"
             quality="100"
-          />
+          /> */}
         </div>
         <div className="card bg-base-100 shadow-xl">
           <div className="card-body">
