@@ -19,7 +19,6 @@ import Link from "next/link";
 
 import { create } from "ipfs-http-client";
 
-
 const blockscapeIPFS = create({
   host: "ipfs.blockscape.network",
   port: 443,
@@ -41,19 +40,33 @@ async function GetIPFS(ipfsId: any) {
   // const bounty = await fetch("https://gateway.pinata.cloud/ipfs/" + ipfsId);
   // return bounty.json();
 
-  const source = blockscapeIPFS.cat(ipfsId);
-          const data = [];
-          for await (const chunk of source) {
-            data.push(chunk);
-          }
-          const byteArray = data.toString().split(",");
-          var bounty = "";
-          for (let j = 0; j < byteArray.length; j++) {
-            bounty += String.fromCharCode(byteArray[j]);
-          }
-
+  try {
+    const source = blockscapeIPFS.cat(ipfsId);
+    const data = [];
+    for await (const chunk of source) {
+      data.push(chunk);
+    }
+    const byteArray = data.toString().split(",");
+    var bounty = "";
+    for (let j = 0; j < byteArray.length; j++) {
+      bounty += String.fromCharCode(Number(byteArray[j]));
+    }
     return JSON.parse(bounty);
+  } catch (error) {
+    console.log(error);
+    const source = blockscapeIPFS.cat(ipfsId);
+    const data = [];
+    for await (const chunk of source) {
+      data.push(chunk);
+    }
+    const byteArray = data.toString().split(",");
+    var bounty = "";
+    for (let j = 0; j < byteArray.length; j++) {
+      bounty += String.fromCharCode(Number(byteArray[j]));
+    }
+  }
 
+  return JSON.parse(bounty);
 }
 
 function BountyDetail() {
@@ -96,9 +109,7 @@ function BountyDetail() {
       (err) => console.log(err),
       () => {
         // download url
-        getDownloadURL(uploadTask.snapshot.ref).then((url) => {
-          console.log(url);
-        });
+        getDownloadURL(uploadTask.snapshot.ref).then((url) => {});
       }
     );
   };

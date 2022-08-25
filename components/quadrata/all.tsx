@@ -90,7 +90,6 @@ const DemoApp: NextPage = () => {
         if (window?.ethereum?.on) {
             window.ethereum.on('accountsChanged', function (accounts: string[]) {
                 setAccount(accounts[0]);
-                console.log('changed account to: ', accounts[0]);
             });
         }
     }, []);

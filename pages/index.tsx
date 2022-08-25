@@ -1,7 +1,6 @@
 import type { NextPage } from "next";
 import Link from "next/link";
-import Image from "next/image";
-import { useContractRead, useNetwork, usePrepareContractWrite, useProvider } from 'wagmi'
+import { useContractRead, useNetwork, usePrepareContractWrite } from 'wagmi'
 import Bountyscape from '../utils/Bountyscape.json'
 import { useEffect, useState } from 'react';
 import { Result } from "ethers/lib/utils";
@@ -28,7 +27,9 @@ async function GetIPFS(bounties: string | Result | undefined) {
       for (let i = 0; i < bounties.length; i++) { 
         if ( bounties[i] !== '' && bounties[i] !== null && bounties[i] !== undefined) {
 
+          try {
           const source = blockscapeIPFS.cat(bounties[i]);
+        
           const data = [];
           for await (const chunk of source) {
             data.push(chunk);
@@ -36,7 +37,7 @@ async function GetIPFS(bounties: string | Result | undefined) {
           const byteArray = data.toString().split(",");
           var bounty = "";
           for (let j = 0; j < byteArray.length; j++) {
-            bounty += String.fromCharCode(byteArray[j]);
+            bounty += String.fromCharCode(Number(byteArray[j]));
           }
 
         //const bounty = await fetch('https://gateway.pinata.cloud/ipfs/' + bounties[i])
@@ -44,6 +45,27 @@ async function GetIPFS(bounties: string | Result | undefined) {
         ipfs.push(JSON.parse(bounty));
         bountyArray.push(bounties[i]);
         tokenIdArray.push(i);
+      } catch (error) {
+        console.log(error);
+        const source = blockscapeIPFS.cat(bounties[i]);
+        const data = [];
+          for await (const chunk of source) {
+            data.push(chunk);
+          }
+          const byteArray = data.toString().split(",");
+          var bounty = "";
+          for (let j = 0; j < byteArray.length; j++) {
+            bounty += String.fromCharCode(Number(byteArray[j]));
+          }
+
+        //const bounty = await fetch('https://gateway.pinata.cloud/ipfs/' + bounties[i])
+        //ipfs.push(await bounty.json());
+        ipfs.push(JSON.parse(bounty));
+        bountyArray.push(bounties[i]);
+        tokenIdArray.push(i);
+      }
+
+
         } 
     }
     } else 

@@ -35,7 +35,7 @@ async function GetIPFS(bounties: string | Result | undefined) {
           const byteArray = data.toString().split(",");
           var bounty = "";
           for (let j = 0; j < byteArray.length; j++) {
-            bounty += String.fromCharCode(byteArray[j]);
+            bounty += String.fromCharCode(Number(byteArray[j]));
           }
 
         //const bounty = await fetch('https://gateway.pinata.cloud/ipfs/' + bounties[i])

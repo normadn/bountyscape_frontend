@@ -86,202 +86,207 @@ const DAO: NextPage = () => {
     }
   }
 
-
   const [showChild, setShowChild] = useState(false);
   useEffect(() => {
     setShowChild(true);
   }, []);
 
-  console.log(tBalancSelf)
+  console.log(tBalancSelf);
 
   if (!showChild) {
     return null;
   }
 
-  if (typeof window === 'undefined') {
+  if (typeof window === "undefined") {
     return <></>;
   } else {
-  return (
-    <main className="min-h-screen">
-      <div className="grid justify-items-center">
-        <div className="text-2xl font-bold mt-8">bountyscapeDAO</div>
-        <br />
-        <div className="stats bg-primary text-primary-content">
-          <div className="stat">
-            <div className="stat-title">Treasury balance</div>
-            <div hidden={!isLoadingT} className="stat-value">
-              {" "}
-              …{" "}
-            </div>
-            <div hidden={!isErrorT} className="stat-value">
-              {" "}
-              Error{" "}
-            </div>
-            <div hidden={isLoadingT || isErrorT} className="stat-value">
-              {" "}
-              {Number(TreasuryBalance?.formatted).toFixed(2)}{" "}
-              {TreasuryBalance?.symbol}{" "}
-            </div>
-            <div hidden={!isLoadingT} className="stat-value">
-              {" "}
-              …{" "}
-            </div>
-            <div hidden={!isErrorT} className="stat-value">
-              {" "}
-              Error{" "}
-            </div>
-            <div hidden={isLoadingT || isErrorT} className="stat-value">
-              {(Number(tBalanc?.toString()) / 1e18).toFixed(2)}  BST
-            </div>
-            <div className="stat-actions">
-              {/* <label className="btn btn-sm btn-success">
+    return (
+      <main className="min-h-screen">
+        <div className="grid justify-items-center">
+          <div className="text-2xl font-bold mt-8">bountyscapeDAO</div>
+          <br />
+          <div className="stats bg-primary text-primary-content">
+            <div className="stat">
+              <div className="stat-title">Treasury balance</div>
+              <div hidden={!isLoadingT} className="stat-value">
+                {" "}
+                …{" "}
+              </div>
+              <div hidden={!isErrorT} className="stat-value">
+                {" "}
+                Error{" "}
+              </div>
+              <div hidden={isLoadingT || isErrorT} className="stat-value">
+                {" "}
+                {Number(TreasuryBalance?.formatted).toFixed(2)}{" "}
+                {TreasuryBalance?.symbol}{" "}
+              </div>
+              <div hidden={!isLoadingT} className="stat-value">
+                {" "}
+                …{" "}
+              </div>
+              <div hidden={!isErrorT} className="stat-value">
+                {" "}
+                Error{" "}
+              </div>
+              <div hidden={isLoadingT || isErrorT} className="stat-value">
+                {(Number(tBalanc?.toString()) / 1e18).toFixed(2)} BST
+              </div>
+              <div className="stat-actions">
+                {/* <label className="btn btn-sm btn-success">
                   Staking APY: 8%
                 </label> */}
+              </div>
             </div>
           </div>
-        </div>
 
-        <div className="text-2xl font-bold mt-8">Your Membership</div>
-        <br />
-        <div className="stats bg-primary text-primary-content">
-          <div className="stat">
-            <div className="stat-title">Your BST balance</div>
-            <div hidden={!isLoadingT} className="stat-value">
-              {" "}
-              …{" "}
-            </div>
-            <div hidden={!isErrorT} className="stat-value">
-              {" "}
-              Error{" "}
-            </div>
-            <div hidden={isLoadingT || isErrorT} className="stat-value">
-              {(typeof tBalancSelf === "undefined" ? "0" : (Number(tBalancSelf?.toString()) / 1e18).toFixed(2))} BST
-            </div>
-            <div className="stat-actions">
-              {/* <label className="btn btn-sm btn-success">
+          <div className="text-2xl font-bold mt-8">Your Membership</div>
+          <br />
+          <div className="stats bg-primary text-primary-content">
+            <div className="stat">
+              <div className="stat-title">Your BST balance</div>
+              <div hidden={!isLoadingT} className="stat-value">
+                {" "}
+                …{" "}
+              </div>
+              <div hidden={!isErrorT} className="stat-value">
+                {" "}
+                Error{" "}
+              </div>
+              <div hidden={isLoadingT || isErrorT} className="stat-value">
+                {typeof tBalancSelf === "undefined"
+                  ? "0"
+                  : (Number(tBalancSelf?.toString()) / 1e18).toFixed(2)}{" "}
+                BST
+              </div>
+              <div className="stat-actions">
+                {/* <label className="btn btn-sm btn-success">
                   Staking APY: 8%
                 </label> */}
+              </div>
+              <button className="btn btn-secondary btn-xs" onClick={addToken}>
+                Add Token to wallet
+              </button>
             </div>
-            <button className="btn btn-secondary btn-xs" onClick={addToken}>
-              Add Token to wallet
-            </button>
+          </div>
+          <div className="text-xl font-bold mt-8">Current Membership Level</div>
+          <div className="btn-group btn-group-vertical">
+            <div
+              className="tooltip tooltip-primary tooltip-left"
+              data-tip="HODL 1000 BST"
+            >
+              <div
+                className="tooltip tooltip-primary tooltip-right"
+                data-tip="fees reduced to 1.00%"
+              >
+                <button
+                  disabled={
+                    Number(tBalancSelf?.toString()) / 1e18 >= 1000
+                      ? false
+                      : true
+                  }
+                  className="btn btn-wide  btn-primary no-animation"
+                >
+                  Goat Scaper{" "}
+                </button>
+              </div>
+            </div>
+            <div
+              className="tooltip tooltip-primary tooltip-left"
+              data-tip="HODL 500 BST"
+            >
+              {" "}
+              <div
+                className="tooltip tooltip-primary tooltip-right"
+                data-tip="fees reduced to 1.25%"
+              >
+                <button
+                  disabled={
+                    Number(tBalancSelf?.toString()) / 1e18 >= 500 &&
+                    Number(tBalancSelf?.toString()) / 1e18 <= 1000
+                      ? false
+                      : true
+                  }
+                  className="btn btn-wide  btn-primary no-animation"
+                >
+                  Executive Scaper{" "}
+                </button>
+              </div>
+            </div>
+            <div
+              className="tooltip tooltip-primary tooltip-left"
+              data-tip="HODL 300 BST"
+            >
+              {" "}
+              <div
+                className="tooltip tooltip-primary tooltip-right"
+                data-tip="fees reduced to 1.5%"
+              >
+                {" "}
+                <button
+                  disabled={
+                    Number(tBalancSelf?.toString()) / 1e18 >= 300 &&
+                    Number(tBalancSelf?.toString()) / 1e18 <= 500
+                      ? false
+                      : true
+                  }
+                  className="btn btn-wide  btn-primary no-animation"
+                >
+                  Senior Scaper
+                </button>
+              </div>
+            </div>
+            <div
+              className="tooltip tooltip-primary tooltip-left"
+              data-tip="HODL 100 BST"
+            >
+              {" "}
+              <div
+                className="tooltip tooltip-primary tooltip-right"
+                data-tip="fees reduced to 1.75%"
+              >
+                {" "}
+                <button
+                  disabled={
+                    Number(tBalancSelf?.toString()) / 1e18 >= 100 &&
+                    Number(tBalancSelf?.toString()) / 1e18 <= 300
+                      ? false
+                      : true
+                  }
+                  className="btn btn-wide  btn-primary no-animation"
+                >
+                  Intermediate Scaper
+                </button>
+              </div>
+            </div>
+            <div
+              className="tooltip tooltip-primary tooltip-left"
+              data-tip="HODL 25 BST"
+            >
+              {" "}
+              <div
+                className="tooltip tooltip-primary tooltip-right"
+                data-tip="fees reduced to 2%"
+              >
+                {" "}
+                <button
+                  disabled={
+                    Number(tBalancSelf?.toString()) / 1e18 >= 25 &&
+                    Number(tBalancSelf?.toString()) / 1e18 <= 100
+                      ? false
+                      : true
+                  }
+                  className="btn btn-wide  btn-primary no-animation"
+                >
+                  Junior Scaper
+                </button>
+              </div>
+            </div>
           </div>
         </div>
-        <div className="text-xl font-bold mt-8">Current Membership Level</div>
-        <div className="btn-group btn-group-vertical">
-          <div
-            className="tooltip tooltip-primary tooltip-left"
-            data-tip="HODL 1000 BST"
-          >
-            <div
-              className="tooltip tooltip-primary tooltip-right"
-              data-tip="fees reduced to 1.00%"
-            >
-              <button
-                disabled={
-                  Number(tBalancSelf?.toString()) / 1e18 >= 1000 ? false : true
-                }
-                className="btn btn-wide  btn-primary no-animation"
-              >
-                Goat Scaper{" "}
-              </button>
-            </div>
-          </div>
-          <div
-            className="tooltip tooltip-primary tooltip-left"
-            data-tip="HODL 500 BST"
-          >
-            {" "}
-            <div
-              className="tooltip tooltip-primary tooltip-right"
-              data-tip="fees reduced to 1.25%"
-            >
-              <button
-                disabled={
-                  Number(tBalancSelf?.toString()) / 1e18 >= 500 &&
-                  Number(tBalancSelf?.toString()) / 1e18 <= 1000
-                    ? false
-                    : true
-                }
-                className="btn btn-wide  btn-primary no-animation"
-              >
-                Executive Scaper{" "}
-              </button>
-            </div>
-          </div>
-          <div
-            className="tooltip tooltip-primary tooltip-left"
-            data-tip="HODL 300 BST"
-          >
-            {" "}
-            <div
-              className="tooltip tooltip-primary tooltip-right"
-              data-tip="fees reduced to 1.5%"
-            >
-              {" "}
-              <button
-                disabled={
-                  Number(tBalancSelf?.toString()) / 1e18 >= 300 &&
-                  Number(tBalancSelf?.toString()) / 1e18 <= 500
-                    ? false
-                    : true
-                }
-                className="btn btn-wide  btn-primary no-animation"
-              >
-                Senior Scaper
-              </button>
-            </div>
-          </div>
-          <div
-            className="tooltip tooltip-primary tooltip-left"
-            data-tip="HODL 100 BST"
-          >
-            {" "}
-            <div
-              className="tooltip tooltip-primary tooltip-right"
-              data-tip="fees reduced to 1.75%"
-            >
-              {" "}
-              <button
-                disabled={
-                  Number(tBalancSelf?.toString()) / 1e18 >= 100 &&
-                  Number(tBalancSelf?.toString()) / 1e18 <= 300
-                    ? false
-                    : true
-                }
-                className="btn btn-wide  btn-primary no-animation"
-              >
-                Intermediate Scaper
-              </button>
-            </div>
-          </div>
-          <div
-            className="tooltip tooltip-primary tooltip-left"
-            data-tip="HODL 25 BST"
-          >
-            {" "}
-            <div
-              className="tooltip tooltip-primary tooltip-right"
-              data-tip="fees reduced to 2%"
-            >
-              {" "}
-              <button
-                disabled={
-                  Number(tBalancSelf?.toString()) / 1e18 >= 25 &&
-                  Number(tBalancSelf?.toString()) / 1e18 <= 100
-                    ? false
-                    : true
-                }
-                className="btn btn-wide  btn-primary no-animation"
-              >
-                Junior Scaper
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
-    </main>
-  );
-}};
+      </main>
+    );
+  }
+};
 
 export default DAO;

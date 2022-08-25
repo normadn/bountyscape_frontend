@@ -2,7 +2,7 @@ import { ethers } from 'ethers'
 import { usePrepareContractWrite, useContractWrite, useNetwork,useWaitForTransaction } from 'wagmi'
 import Bountyscape from '../../../utils/Bountyscape.json'
 
-export function CreateBounty({ipfsContent, val} : {ipfsContent: string, val: string}) {
+export function CreateBounty({ipfsContent, val, htmlFor} : {ipfsContent: string, val: string, htmlFor: string}) {
 
 
   const ipfsId = ipfsContent;

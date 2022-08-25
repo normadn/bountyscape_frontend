@@ -8,7 +8,7 @@ import { ethers } from "ethers";
 import { useEffect, useState } from "react";
 import { Result } from "ethers/lib/utils";
 import { ClaimFunds } from "../components/scFunctions/write/claimFunds";
-import { evmosToEth, ethToEvmos } from "@tharsis/address-converter";
+import { ethToEvmos } from "@tharsis/address-converter";
 
 async function GetIPFS(bounties: string | Result | undefined) {
   let ipfs = new Array<JSON>;
@@ -99,8 +99,6 @@ const Account: NextPage = () => {
     }
 
   }
-
-
 
   useEffect(() => {
     if (bounty === undefined && data === undefined) {

@@ -1,6 +1,5 @@
 import { CreateBounty } from "../../components/scFunctions/write/createBounty";
 import { useState, useEffect } from "react";
-import axios from "axios";
 import { create } from "ipfs-http-client";
 
 const blockscapeIPFS = create({
@@ -139,16 +138,18 @@ function BountyDetail() {
           <label className="label"></label>
         </div>
         <div className="indicator">
-              <span className="indicator-item indicator-bottom badge badge-primary">& get 1 BST</span> 
-        <label
-          htmlFor="mint-modal"
-          className="btn btn-primary  modal-button"
-          onClick={async () =>
-            setIpfsHash(await createIPFS(bounty as ipfsData))
-          }
-        >
-          Mint Bounty NFT
-        </label>
+          <span className="indicator-item indicator-bottom badge badge-primary">
+            & get 1 BST
+          </span>
+          <label
+            htmlFor="mint-modal"
+            className="btn btn-primary  modal-button"
+            onClick={async () =>
+              setIpfsHash(await createIPFS(bounty as ipfsData))
+            }
+          >
+            Mint Bounty NFT
+          </label>
         </div>
       </div>
 
@@ -172,8 +173,7 @@ function BountyDetail() {
               <CreateBounty
                 ipfsContent={ipfsHash}
                 val={reward}
-                htmlFor="mint-modal"
-                className="btn btn-primary "
+                htmlFor={"mint-modal"}
               />
             )}
           </div>
