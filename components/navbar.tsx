@@ -68,6 +68,9 @@ const Navbar = () => {
                   <Link href={"/bounties"}>Bounties</Link>
                 </li>
                 <li>
+                  <Link href={"/retrobounties"}>RetroBounties</Link>
+                </li>
+                <li>
                   <Link href={"/staking"}>Staking</Link>
                 </li>
                 <div hidden={!isErrorEmployer}>
@@ -107,6 +110,9 @@ const Navbar = () => {
               <li>
                 <Link href={"/bounties"}>Bounties</Link>
               </li>
+              <li>
+                  <Link href={"/retrobounties"}>RetroBounties</Link>
+                </li>
               <li>
                 <Link href={"/staking"}>Staking</Link>
               </li>

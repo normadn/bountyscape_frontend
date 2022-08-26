@@ -13,7 +13,6 @@ const blockscapeIPFS = create({
   host: "ipfs.blockscape.network",
   port: 443,
   protocol: "https",
-  mode: "no-cors", // maybe fixes the cors issue needs to be observed
 });
 
 
