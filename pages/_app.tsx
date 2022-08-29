@@ -62,7 +62,7 @@ const evmosChain: Chain = {
 };
 
 const { chains, provider, webSocketProvider } = configureChains(
-  [evmosChain, evmosTestChain, chain.goerli],
+  [evmosChain, evmosTestChain],
   [publicProvider()]
 );
 

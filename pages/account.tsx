@@ -1,9 +1,7 @@
 /* eslint-disable @next/next/no-img-element */
 import type { NextPage } from "next";
-import Quadrata from "../utils/Quadrata.json";
 import Bountyscape from '../utils/Bountyscape.json'
-import DemoApp from "../components/quadrata/all";
-import { useAccount, useContractRead, usePrepareContractWrite, useNetwork, useBalance } from "wagmi";
+import { useAccount, usePrepareContractWrite, useNetwork } from "wagmi";
 import { ethers } from "ethers";
 import { useEffect, useState } from "react";
 import { Result } from "ethers/lib/utils";
@@ -45,14 +43,6 @@ const Account: NextPage = () => {
   const [data, setData] = useState<JSON[]>([]);
   const [bounty, setBounty] = useState<JSON[]>([]);
   const [reward, setReward] = useState<any>([]);
-
-
-  const { data: isBusiness, isLoading: isLoadingTokenId, isSuccess: isSuccessTokenId, error } = useContractRead({
-    addressOrName: "0x2B212B47Faf2040cA4782e812048F5aE8ad5Fa2f",
-    contractInterface: Quadrata,
-    functionName: 'getAttributesFree',
-    args: [address, 1, ethers.utils.id('IS_BUSINESS')],
-  })
 
 
   const { isError: isErrorEmployer } = usePrepareContractWrite({
@@ -115,24 +105,6 @@ const Account: NextPage = () => {
         })
     }
   }, [bounty, data, isLoaded]);
-
-  useEffect(() => {
-    if (isSuccessTokenId) {
-      if (isBusiness?.[0].toString() === "0x7749ed7587e6dbf171ce6be50bea67236732d7ccfd51e327bc28b612ec06faa7") {
-        setStatus("Verifed KYB - You are a verified business")
-        setDisabled(true);
-      } else if (isBusiness?.[0].toString() === "0xa357fcb91396b2afa7ab60192e270c625a2eb250b8f839ddb179f207b40459b4") {
-        setStatus("Verified KYC - You are a verified individual")
-        setDisabled(true);
-      }
-    } else {
-      setStatus("Not Verified KYC/KYB - Become Verified:")
-      setDisabled(false);
-
-    }
-  }, [isSuccessTokenId, isBusiness])
-
-
 
   useEffect(() => {
     getBalanceReward().then(([ipfsArray, rewardArray]) => {
@@ -210,23 +182,6 @@ const Account: NextPage = () => {
             </div></>
           )}
           <br />
-          {chain?.name === "Goerli" && (
-            <><div className="text-xl font-bold mt-8">{status}</div><br /><button disabled={disabled} className="btn btn-primary">
-              <label htmlFor="my-modal-3" className="modal-button">
-                KYC/KYB
-              </label>
-            </button><input type="checkbox" id="my-modal-3" className="modal-toggle" /><div className="modal">
-                <div className="modal-box relative">
-                  <label
-                    htmlFor="my-modal-3"
-                    className="btn btn-primary btn-circle absolute right-2 top-2"
-                  >
-                    ✕
-                  </label>
-                  <DemoApp />
-                </div>
-              </div></>
-          )}
         </div>
       </main>
     );

@@ -274,51 +274,6 @@ const Staking: NextPage = () => {
                 </div>
               </>
             )}
-
-            {chain?.name === "Goerli" && (
-              <>
-                <br />
-                <div className="text-2xl font-bold mt-8">
-                  stake your {data?.symbol} powered by blockscape & swell
-                </div>
-                <br />
-                <div className="card w-96 bg-base-100 shadow-xl">
-                  <figure>
-                    <img
-                      src="https://i.ibb.co/Yh1HvJW/bls.jpg"
-                      alt="blockscape"
-                    />
-                  </figure>
-                  <div className="card-body">
-                    <div className="grid grid-cols-2 gap-2">
-                      <div>Available to Stake</div>
-                      <div hidden={!isLoading}> Fetching balance… </div>
-                      <div hidden={!isError}> Error fetching balance </div>
-                      <div hidden={isLoading || isError}>
-                        {" "}
-                        {Number(data?.formatted).toFixed(2)} {data?.symbol}{" "}
-                      </div>
-                    </div>
-                    <div className="card-actions justify-center">
-                      <input
-                        type="number"
-                        placeholder="Enter Stake Amount"
-                        className="input input-bordered input-primary w-full max-w-xs"
-                        onChange={(e) =>
-                          setStake(ethers.utils.parseEther(e.target.value))
-                        }
-                      />
-                      <button
-                        className="btn btn-primary"
-                        onClick={() => write?.()}
-                      >
-                        Stake your {data?.symbol}
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              </>
-            )}
           </div>
 
           {/* <><div className="toast toast-end">
