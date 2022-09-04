@@ -7,24 +7,56 @@ import { useEffect, useState } from "react";
 import { Result } from "ethers/lib/utils";
 import { ClaimFunds } from "../components/scFunctions/write/claimFunds";
 import { ethToEvmos } from "@tharsis/address-converter";
+import { create } from "ipfs-http-client";
 
-async function GetIPFS(bounties: string | Result | undefined) {
-  let ipfs = new Array<JSON>;
+const nodeIPFS = create({
+  host: "magentadao-backend.westeurope.cloudapp.azure.com",
+  port: 443,
+  protocol: "https",
+});
 
-  if (bounties !== undefined && bounties !== [] && bounties !== null && bounties.length !== undefined) {
-    for (let i = 0; i < bounties.length; i++) {
-      if (bounties[i] !== '' && bounties[i] !== null && bounties[i] !== undefined) {
-        const bounty = await fetch('https://gateway.pinata.cloud/ipfs/' + bounties[i])
-        ipfs.push(await bounty.json());
+async function GetIPFS(tasks: string | Result | undefined) {
+  let ipfs = new Array<JSON>();
 
+  if (tasks !== undefined && tasks !== null) {
+    for (let i = 0; i < tasks.length; i++) {
+      if (tasks[i] !== "" && tasks[i] !== null && tasks[i] !== undefined) {
+        try {
+          const source = nodeIPFS.cat(tasks[i]);
+
+          const data = [];
+          for await (const chunk of source) {
+            data.push(chunk);
+          }
+          const byteArray = data.toString().split(",");
+          var task = "";
+          for (let j = 0; j < byteArray.length; j++) {
+            task += String.fromCharCode(Number(byteArray[j]));
+          }
+
+          ipfs.push(JSON.parse(task));
+        } catch (error) {
+          console.log(error);
+          const source = nodeIPFS.cat(tasks[i]);
+          const data = [];
+          for await (const chunk of source) {
+            data.push(chunk);
+          }
+          const byteArray = data.toString().split(",");
+          var task = "";
+          for (let j = 0; j < byteArray.length; j++) {
+            task += String.fromCharCode(Number(byteArray[j]));
+          }
+
+          ipfs.push(JSON.parse(task));
+        }
       }
     }
   } else {
-    console.log("No bounty found");
+    console.log("No task found");
   }
 
   return ipfs;
-
 }
 
 const Account: NextPage = () => {
@@ -67,8 +99,8 @@ const Account: NextPage = () => {
           ? "0x7bE0571a42bF0e4429d1fbcECA791575CFb73b4E"
           : "0x548325D23dD7FdcD3aC34daCfb51Ad10CeFd13fd";
       const bountyscape = new ethers.Contract(contractAddr, Bountyscape.abi, provider);
-      const ipfsArray: any = [];
-      const rewardArray: any = [];
+      let ipfsArray = new Array();
+    let rewardArray = new Array();
       const address = await signer.getAddress();
       for (let i = 0; i < 1000; i++) {
 
